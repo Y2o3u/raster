@@ -1,26 +1,27 @@
 import { FrameBuffer } from '../buffer/frame/frame-buffer';
 import { Vertex } from '../core/data/vertex';
+import { RenderContext } from '../core/render-context';
 import { barycentricInterpolation, cross, getBaryCentricCoord, getBoundBox } from '../math/utils/util';
 import Vec4 from '../math/vector/vec4';
+import { Rasterizer } from './base-rasterize';
 
-export class RasterizerNormal {
-  /** 帧缓冲 */
-  private frameBuffer: FrameBuffer;
-  /** 屏幕宽高 */
-  private width: number = 0;
-  private height: number = 0;
+/**
+ * 普通光栅化器
+ */
+export class RasterizerNormal extends Rasterizer {
+  /** 顶点着色器输出 */
+  private readonly variable: Vertex = new Vertex();
 
-  private readonly variable: Vertex;
-
-  constructor(width: number, height: number) {
-    this.variable = new Vertex();
-    this.width = width;
-    this.height = height;
-    // this.zBuffer = new ZBuffer1x(width, height);
-    this.frameBuffer = new FrameBuffer(width, height);
-  }
-
-  run(p0: Vec4, p1: Vec4, p2: Vec4, v0: Vertex, v1: Vertex, v2: Vertex): void {
+  /**
+   * 渲染
+   * @param p0 三角形顶点0
+   * @param p1 三角形顶点1
+   * @param p2 三角形顶点2
+   * @param v0 三角形顶点0的顶点数据
+   * @param v1 三角形顶点1的顶点数据
+   * @param v2 三角形顶点2的顶点数据
+   */
+  run(p0: Vec4, p1: Vec4, p2: Vec4, v0: Vertex, v1: Vertex, v2: Vertex, renderContext: RenderContext): void {
     const z0 = p0.w;
     const z1 = p1.w;
     const z2 = p2.w;
@@ -57,9 +58,9 @@ export class RasterizerNormal {
             continue;
           }
 
+          // 透视插值矫正
           let z = (1 / z0) * alpha + (1 / z1) * beta + (1 / z2) * gamma;
           z = 1 / z;
-
           alpha = (alpha / z0) * z;
           beta = (beta / z1) * z;
           gamma = (gamma / z2) * z;
@@ -86,12 +87,8 @@ export class RasterizerNormal {
     }
   }
 
-  public getFrameBuffer(): Float32Array {
-    return this.frameBuffer.getFrameBuffer();
-  }
-
   clear() {
-    // this.zBuffer.clear();
-    this.frameBuffer.clearBuffer();
+    this.zBuffer.clear();
+    this.frameBuffer.clear();
   }
 }

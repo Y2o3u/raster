@@ -2,6 +2,8 @@ import { Vertex } from '@/engine/core/data/vertex';
 import Vec4 from '../vector/vec4';
 import { Vec3 } from '../vector/vec3';
 import { Vec2 } from '../vector/vec2';
+import { VAO } from '@/engine/core/data/vao';
+import { VBO } from '@/engine/core/data/vbo';
 
 /**
  * 重心坐标计算
@@ -97,15 +99,10 @@ export function barycentricInterpolation(
       out.position
     );
   }
-  if (v0.normal) {
+  if (v0.normal)
     out.normal = barycentricInterpolationVec3(v0.normal, v1.normal, v2.normal, alpha, beta, gamma, out.normal);
-  }
-  if (v0.uv) {
-    out.uv = this.barycentricVec2(v0.uv, v1.uv, v2.uv, alpha, beta, gamma, out.uv);
-  }
-  if (v0.color) {
-    out.color = barycentricInterpolationVec4(v0.color, v1.color, v2.color, alpha, beta, gamma, out.color);
-  }
+  if (v0.uv) out.uv = barycentricInterpolationVec2(v0.uv, v1.uv, v2.uv, alpha, beta, gamma, out.uv);
+  if (v0.color) out.color = barycentricInterpolationVec4(v0.color, v1.color, v2.color, alpha, beta, gamma, out.color);
   return out;
 }
 
@@ -164,4 +161,60 @@ export function barycentricInterpolationVec2(
   out.x = v0.x * alpha + v1.x * beta + v2.x * gamma;
   out.y = v0.y * alpha + v1.y * beta + v2.y * gamma;
   return out;
+}
+
+/**
+ * 将VAO离散数据合并成单一完整的VBO数据
+ * @param vao
+ * @param position
+ * @param uv
+ * @param color
+ * @param normal
+ * @param tangent
+ * @constructor
+ */
+export function VAO2VBO(vao: VAO, position = 3, uv = 2, color = 3, normal = 3, tangent = 3): VBO {
+  const vbo = new VBO(position, uv, color, normal, tangent);
+  const size = position + uv + color + normal + tangent;
+
+  // pLen 为所有坐标xyz的集合
+  const pLen = vao.position.length;
+  // pCount 将所有集合 / 坐标长度, 结果为顶点数量
+  const pCount = pLen / position;
+  vbo.setVertexCount(pCount);
+  const data: number[] = new Array(pCount * size);
+  let offset = 0;
+  // position
+  offset = dataMerge(data, vao.position, size, position, pCount, offset);
+  offset = dataMerge(data, vao.uv, size, uv, pCount, offset);
+  offset = dataMerge(data, vao.color, size, color, pCount, offset);
+  offset = dataMerge(data, vao.normal, size, normal, pCount, offset);
+  offset = dataMerge(data, vao.tangent, size, tangent, pCount, offset);
+  vbo.setVertexData(data);
+  return vbo;
+}
+
+/**
+ *
+ * @param out 最终输出数组
+ * @param input voa输入的各个数组
+ * @param lineSize voa 每个顶点数据的长度
+ * @param variableSize 这一次处理的数据长度
+ * @param vertexCount 总共有多少顶点要处理
+ * @param offset 这一次处理的数据的偏移量
+ */
+function dataMerge(
+  out: number[],
+  input: number[],
+  lineSize: number,
+  variableSize: number,
+  vertexCount: number,
+  offset: number
+) {
+  for (let i = 0; i < vertexCount; ++i) {
+    for (let j = 0; j < variableSize; ++j) {
+      out[i * lineSize + j + offset] = input[i * variableSize + j];
+    }
+  }
+  return offset + variableSize;
 }

@@ -9,8 +9,6 @@ export class WebCanvas {
   width = 0;
   height = 0;
 
-  ratio = 1;
-
   constructor(canvasId: string) {
     if (!window.document) return;
     let canvas = document.getElementById(canvasId) as HTMLCanvasElement;

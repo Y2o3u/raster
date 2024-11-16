@@ -3,7 +3,7 @@ import { Vec3 } from '@/engine/math/vector/vec3';
 import Vec4 from '@/engine/math/vector/vec4';
 
 /**
- * 顶点类
+ * 顶点数据
  */
 export class Vertex {
   /** 位置 */

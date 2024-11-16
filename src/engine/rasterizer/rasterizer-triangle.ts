@@ -1,21 +1,23 @@
 import { FrameBuffer } from '../buffer/frame/frame-buffer';
+import { Vertex } from '../core/data/vertex';
+import { RenderContext } from '../core/render-context';
 import Vec4 from '../math/vector/vec4';
+import { Rasterizer } from './base-rasterize';
 
-export class RasterizerTriangle {
-  private frameBuffer: FrameBuffer;
-
-  private readonly width: number = 0;
-  private readonly height: number = 0;
-
-  private color: Vec4 = new Vec4(0, 0, 0, 1);
-
-  constructor(width: number, height: number) {
-    this.width = width;
-    this.height = height;
-    this.frameBuffer = new FrameBuffer(width, height);
-  }
-
-  public run(p0: Vec4, p1: Vec4, p2: Vec4): void {
+/**
+ * 三角形光栅化器
+ */
+export class RasterizerTriangle extends Rasterizer {
+  /**
+   * 渲染
+   * @param p0 三角形顶点0
+   * @param p1 三角形顶点1
+   * @param p2 三角形顶点2
+   * @param v0 三角形顶点0的顶点数据
+   * @param v1 三角形顶点1的顶点数据
+   * @param v2 三角形顶点2的顶点数据
+   */
+  public run(p0: Vec4, p1: Vec4, p2: Vec4, v0: Vertex, v1: Vertex, v2: Vertex, renderContext: RenderContext): void {
     p0.standardized();
     p1.standardized();
     p2.standardized();
@@ -77,18 +79,15 @@ export class RasterizerTriangle {
     }
   }
 
+  /**
+   * 设置颜色
+   * @param x 像素x坐标
+   * @param y 像素y坐标
+   */
   private setColor(x: number, y: number): void {
     if (x >= this.width || x < 0 || y > this.height || y < 0) {
       return;
     }
-    this.frameBuffer.setColor(x, y, this.color);
-  }
-
-  public getFrameBuffer(): Float32Array {
-    return this.frameBuffer.getFrameBuffer();
-  }
-
-  public clear(): void {
-    this.frameBuffer.clearBuffer();
+    this.frameBuffer.setColor(x, y, new Vec4(1, 0, 0, 1));
   }
 }

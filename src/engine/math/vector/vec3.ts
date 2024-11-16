@@ -228,6 +228,15 @@ export class Vec3 {
   }
 
   /**
+   * 检查两个向量是否相等
+   * @param v 另一个向量
+   * @returns 是否相等
+   */
+  equals(v: Vec3): boolean {
+    return this.x === v.x && this.y === v.y && this.z === v.z;
+  }
+
+  /**
    * 检查向量是否为零向量
    * @returns 是否为零向量
    */
