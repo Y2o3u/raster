@@ -49,4 +49,13 @@ export class Scheduler {
   public getDeltaTime(): number {
     return this.deltaTime;
   }
+
+  /**
+   * 获取当前帧率
+   */
+  public getFPS(): number {
+    const minDeltaTime = 0.001; // 设置一个最小的时间间隔
+    const safeDeltaTime = Math.max(this.deltaTime, minDeltaTime);
+    return Math.round(1 / safeDeltaTime);
+  }
 }

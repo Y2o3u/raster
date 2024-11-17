@@ -1,29 +1,68 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './inspector.scss';
-import { Button, Checkbox, Input, Radio, Select } from 'antd';
+import { Button, Checkbox, Input, Select } from 'antd';
+import * as SceneList from '../examples';
 
 const { Option } = Select;
 
-/**
- * 检查器面板
- * @param resolution 分辨率
- * @returns
- */
-function Inspector(resolution: { x: number; y: number }) {
+function chunkArray(array: any[], size: number) {
+  const result = [];
+  for (let i = 0; i < array.length; i += size) {
+    result.push(array.slice(i, i + size));
+  }
+  return result;
+}
+
+function Inspector({
+  initialResolution,
+  onResolutionChange,
+}: {
+  initialResolution: { x: number; y: number };
+  onResolutionChange: (resolution: { x: number; y: number }) => void;
+}) {
+  const [resolution, setResolution] = useState(initialResolution);
+
+  const handleWidthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setResolution({ ...resolution, x: parseInt(e.target.value, 10) || 0 });
+  };
+
+  const handleHeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setResolution({ ...resolution, y: parseInt(e.target.value, 10) || 0 });
+  };
+
+  const handleBlurOrEnter = (e: React.KeyboardEvent<HTMLInputElement> | React.FocusEvent<HTMLInputElement>) => {
+    if ('key' in e && e.key !== 'Enter') return;
+    onResolutionChange(resolution);
+  };
+
+  const sceneChunks = chunkArray(Object.keys(SceneList), 3);
+
   return (
-    <div className='Inspector' style={{ textAlign: 'left' }}>
-      {/* 分辨率、宽高设置、分别对应输入框（样式占一行、不超出屏幕） */}
-      <div style={{ marginBottom: '10px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        <label style={{ marginRight: '5px', flex: 1 }}>分辨率</label>
-        <Input placeholder='width' style={{ flex: 1, height: '20px', marginRight: '5px' }} />
-        <Input placeholder='height' style={{ flex: 1, height: '20px', marginRight: '5px' }} />
+    <div className='Inspector'>
+      <div className='resolution'>
+        <label className='label'>分辨率</label>
+        <Input
+          placeholder='width'
+          value={resolution.x}
+          onChange={handleWidthChange}
+          onBlur={handleBlurOrEnter}
+          onKeyPress={handleBlurOrEnter}
+          className='input'
+        />
+        <Input
+          placeholder='height'
+          value={resolution.y}
+          onChange={handleHeightChange}
+          onBlur={handleBlurOrEnter}
+          onKeyPress={handleBlurOrEnter}
+          className='input'
+        />
       </div>
 
-      {/* 渲染模式 */}
-      <div style={{ marginBottom: '10px' }}>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <label style={{ marginRight: '5px' }}>光栅化模式:</label>
-          <Select defaultValue='normal' style={{ height: '20px', width: '120px' }}>
+      <div className='render-mode'>
+        <div className='flex-center'>
+          <label className='label'>光栅化模式:</label>
+          <Select defaultValue='normal' className='select'>
             <Option value='high'>普通</Option>
             <Option value='normal'>三角形</Option>
             <Option value='ultra'>深度</Option>
@@ -31,23 +70,34 @@ function Inspector(resolution: { x: number; y: number }) {
         </div>
       </div>
 
-      {/* 相机模式 */}
-      <div style={{ marginBottom: '10px' }}>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <label style={{ marginRight: '5px' }}>相机模式:</label>
-          <Select defaultValue='perspective' style={{ height: '20px', width: '120px' }}>
+      <div className='camera-mode'>
+        <div className='flex-center'>
+          <label className='label'>相机模式:</label>
+          <Select defaultValue='perspective' className='select'>
             <Option value='perspective'>透视</Option>
             <Option value='orthographic'>正交</Option>
           </Select>
         </div>
       </div>
 
-      {/* 开启MSAA */}
-      <div style={{ marginBottom: '10px', display: 'flex', alignItems: 'center' }}>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <label style={{ marginRight: '5px' }}>抗锯齿(MSAA):</label>
+      <div className='msaa'>
+        <div className='flex-center'>
+          <label className='label'>抗锯齿(MSAA):</label>
           <Checkbox />
         </div>
+      </div>
+
+      <div className='scene-list'>
+        <label className='scene-label'>场景列表:</label>
+        {sceneChunks.map((chunk, index) => (
+          <div key={index} className='scene-group'>
+            {chunk.map((sceneKey) => (
+              <Button key={sceneKey} size='small' className='scene-button'>
+                {sceneKey}
+              </Button>
+            ))}
+          </div>
+        ))}
       </div>
     </div>
   );

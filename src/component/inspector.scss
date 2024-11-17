@@ -2,21 +2,73 @@
  * 检查器面板样式
  */
 .Inspector {
-  label {
-    display: block;
-  }
-}
-
-// 字体缩小
-.Inspector label {
+  text-align: left;
+  padding: 5px;
   font-size: 12px;
+  font-family: 'Arial', sans-serif;
+  color: #fff;
 }
 
-.Inspector Input {
+.resolution,
+.render-mode,
+.camera-mode,
+.msaa {
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.label {
+  margin-right: 5px;
+  flex: 1;
+  text-align: left;
+}
+
+.input {
+  flex: 1;
+  height: 20px;
+  margin-right: 5px;
+}
+
+.select {
+  height: 20px;
+  width: 120px;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.scene-list {
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  max-height: 300px;
+  overflow-y: auto;
+  justify-content: flex-start;
   width: 100%;
-  height: 20px;
 }
 
-.Inspector Select {
-  height: 20px;
+.scene-label {
+  margin-right: 5px;
+  text-align: left;
+  align-self: flex-start;
+  margin-bottom: 5px;
+}
+
+.scene-group {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  margin-bottom: 5px;
+  width: 100%;
+}
+
+.scene-button {
+  flex: 1;
+  min-width: 80px;
 }

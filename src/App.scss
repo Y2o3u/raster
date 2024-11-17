@@ -9,7 +9,6 @@
 body,
 html {
   margin: 0;
-  padding: 0;
   width: 100%;
   height: auto;
   overflow: hidden;
@@ -22,20 +21,34 @@ html {
   justify-content: center;
 }
 
+.fps {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  // 其他样式可以根据需要调整
+  // background-color: rgba(255, 255, 255, 0.5);
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
+}
+
 .canvas-container {
   flex: 1 0 80%;
   height: auto;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #e0e0e0;
-  margin-right: 0.5%; // 添加
+  margin-right: 0.2%; // 添加
+  position: relative;
 }
 
 .canvas-container canvas {
   width: 100%;
   height: 100%;
   object-fit: contain; /* 保持等比缩放 */
+  border-radius: 10px;
+  max-height: 100%;
+  position: relative;
 }
 
 .sidebar {
@@ -45,4 +58,6 @@ html {
   // 内容跟随等比缩放
   object-fit: contain;
   display: block;
+  border-radius: 10px;
+  background-color: #000;
 }
