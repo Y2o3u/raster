@@ -26,6 +26,17 @@ export interface ZBuffer {
    */
   getZ(x: number, y: number, index: number): number;
 
+  /**
+   * 获取深度值
+   * @param index 索引
+   */
+  getZByIndex?(index: number): number;
+
+  /**
+   * 获取深度缓冲数据
+   */
+  getZBuffer(): Float32Array;
+
   /** 清空所有深度信息 */
   clear(): void;
 }

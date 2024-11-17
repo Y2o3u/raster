@@ -6,9 +6,10 @@ import { Vertex } from '../core/data/vertex';
 import Vec4 from '../math/vector/vec4';
 import { Node } from '../core/node';
 import { Mat4 } from '../math/matrix/mat4';
+import { RasterizerDepth } from '../rasterizer/rasterizer-depth';
 
 /** 渲染器列表 */
-const RasterizerList = [RasterizerTriangle, RasterizerNormal];
+const RasterizerList = [RasterizerTriangle, RasterizerNormal, RasterizerDepth];
 
 /** 渲染模式 */
 export enum RasterizerMode {
@@ -124,7 +125,7 @@ export class Pipeline {
    * @returns 帧缓冲
    */
   getFrameBuffer() {
-    return this.rasterizers[this.renderMode].frameBuffer.getFrameBuffer();
+    return this.rasterizers[this.renderMode].getFrameBuffer();
   }
 
   clear() {

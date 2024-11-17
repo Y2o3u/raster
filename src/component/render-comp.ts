@@ -65,23 +65,27 @@ const Renderer: React.FC<RendererProps> = ({ resolution, sceneKey, renderMode, c
     renderContext.matViewport = camera.matViewport;
     renderContext.matOrtho = camera.matOrtho;
     renderContext.matProjection = camera.matProjection;
+    // 时间
     renderContext.time = scheduler.getTotalTime();
+    // 相机位置
     renderContext.cameraPos = camera.getPosition().xyz;
+    // 球光位置、颜色
     if (sphereLight) {
       renderContext.sphereLightPos = sphereLight.position.xyz;
       renderContext.sphereLightColor = sphereLight.color;
     }
 
-    // 遍历场景所有节点
+    // 遍历场景所有节点、填充FrameBuffer
     for (let i = 0; i < scene.size(); ++i) {
       let node = scene.getChild(i);
       renderContext.matWorld = node.matWorld;
       renderContext.matWorldIT = node.matWorldIT;
-      const matMvp = renderContext.matProjection.multiply(renderContext.matView).multiply(node.matWorld);
-      renderContext.matMVP = matMvp;
+      // 计算MVP矩阵
+      renderContext.matMVP = renderContext.matProjection.multiply(renderContext.matView).multiply(node.matWorld);
       renderContext.vs = node.vs;
       renderContext.fs = node.fs;
       renderContext.textures[0] = node.texture;
+      // 渲染节点
       pipeline.renderNode(node);
     }
   }

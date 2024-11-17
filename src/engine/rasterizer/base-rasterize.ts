@@ -65,6 +65,11 @@ export class Rasterizer {
    */
   run(p0: Vec4, p1: Vec4, p2: Vec4, v0: Vertex, v1: Vertex, v2: Vertex, renderContext: RenderContext): void {}
 
+  /** 获取帧缓冲 */
+  getFrameBuffer(): Float32Array {
+    return this.frameBuffer.getFrameBuffer();
+  }
+
   clear(): void {
     this.frameBuffer.clear();
     this.zBuffer.clear();

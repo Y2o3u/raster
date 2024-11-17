@@ -16,6 +16,11 @@ export class ZBufferX1 implements ZBuffer {
     this.zBuffer = new Float32Array(width * height);
   }
 
+  /** 获取深度缓冲数据 */
+  getZBuffer(): Float32Array {
+    return this.zBuffer;
+  }
+
   /**
    * 设置深度值
    * @param x 像素x坐标
@@ -33,6 +38,11 @@ export class ZBufferX1 implements ZBuffer {
    */
   getZ(x: number, y: number): number {
     return this.zBuffer[x + y * this.width];
+  }
+
+  /** 获取深度值 */
+  getZByIndex(index: number): number {
+    return this.zBuffer[index];
   }
 
   /**

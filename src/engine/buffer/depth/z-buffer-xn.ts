@@ -21,6 +21,11 @@ export class ZBufferXN implements ZBuffer {
     this.zBuffer = new Float32Array(width * height * samples);
   }
 
+  /** 获取深度缓冲数据 */
+  getZBuffer(): Float32Array {
+    return this.zBuffer;
+  }
+
   /**
    * 设置深度值
    * @param x x坐标
