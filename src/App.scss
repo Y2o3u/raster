@@ -48,7 +48,8 @@ html {
   object-fit: contain; /* 保持等比缩放 */
   border-radius: 10px;
   max-height: 100%;
-  position: relative;
+  // position: relative;
+  background-color: #000;
 }
 
 .sidebar {
@@ -60,4 +61,5 @@ html {
   display: block;
   border-radius: 10px;
   background-color: #000;
+  overflow: hidden;
 }

@@ -1,98 +1,46 @@
 import React, { useState } from 'react';
 import './App.scss';
-
-import { useEffect } from 'react';
-import { Vec2 } from '@/engine/math/vector/vec2';
-import { Scene } from './engine/core/scene';
-import { Scene01 } from './examples/scene01';
-import { WebCanvas } from './engine/platform/h5-canvas';
-import { Scheduler } from './engine/core/schedule';
-import { Scene02 } from './examples/scene02';
-import { Mat4 } from './engine/math/matrix/mat4';
-import { Pipeline, RasterizerMode } from './engine/pipeline/pipeline';
+import { RasterizerMode } from './engine/pipeline/pipeline';
 import Inspector from './component/inspector';
-
-/** 全局计时器 */
-const scheduler = new Scheduler();
-
-/** 渲染场景 */
-function renderScene(scene: Scene, pipeline: Pipeline) {
-  // 获取相机、灯光
-  const camera = scene.getCamera();
-  const sphereLight = scene.getSphereLight();
-
-  // 每次渲染设置一次
-  const renderContext = pipeline.renderContext;
-  renderContext.matView = camera.matView;
-  renderContext.matViewport = camera.matViewport;
-  renderContext.matOrtho = camera.matOrtho;
-  renderContext.matProjection = camera.matProjection;
-
-  // 将相关数据填充到renderContext中、主要用于着色器
-  renderContext.time = scheduler.getTotalTime();
-  renderContext.cameraPos = camera.getPosition().xyz;
-  if (sphereLight) {
-    renderContext.sphereLightPos = sphereLight.position.xyz;
-    renderContext.sphereLightColor = sphereLight.color;
-  }
-
-  // 遍历场景中的所有节点、填充frameBuffer
-  for (let i = 0; i < scene.size(); ++i) {
-    let node = scene.getChild(i);
-    renderContext.matWorld = node.matWorld;
-    renderContext.matWorldIT = node.matWorldIT;
-    // 计算MVP变换矩阵、从右到左
-    const matMvp = renderContext.matProjection.multiply(renderContext.matView).multiply(node.matWorld);
-    renderContext.matMVP = matMvp;
-    renderContext.vs = node.vs;
-    renderContext.fs = node.fs;
-    renderContext.textures[0] = node.texture;
-    pipeline.renderNode(node);
-  }
-}
+import * as SceneList from './examples';
+import { CameraMode } from './engine/core/camera';
+import Renderer from './component/render-comp';
 
 function App() {
   const [resolution, setResolution] = useState({ x: 800, y: 600 });
+  const [sceneKey, setSceneKey] = useState<string | null>(SceneList.Scene01.name);
+  const [renderMode, setRenderMode] = useState(RasterizerMode.Normal);
+  const [cameraMode, setCameraMode] = useState(CameraMode.Perspective);
+  const [isMSAAEnabled, setMSAA] = useState(false);
 
-  const handleResolutionChange = (newResolution: { x: number; y: number }) => {
-    console.log('Resolution changed:', newResolution);
-    setResolution(newResolution);
-    // 在这里可以添加其他响应逻辑，比如重新渲染场景
-  };
-
-  /** 渲染 */
-  function render(scene: Scene) {
-    // 初始化canvas、渲染管线
-    const canvas = new WebCanvas('canvas');
-    const pipeline = new Pipeline(resolution.x, resolution.y, RasterizerMode.Normal);
-
-    // 渲染主循环
-    function mainLoop() {
-      // 清除帧缓冲
-      pipeline.clear();
-      // 更新计时器
-      scheduler.update();
-      // 渲染场景
-      renderScene(scene, pipeline);
-
-      document.getElementById('fps').innerText = `FPS: ${scheduler.getFPS()}`;
-
-      // 获取最终的帧缓冲、渲染到canvas中
-      canvas.render(pipeline.getFrameBuffer());
-      requestAnimationFrame(mainLoop);
+  /** 分辨率变化 */
+  function handleResolutionChange(newResolution: { x: number; y: number }) {
+    // 变化了才更新
+    if (newResolution.x !== resolution.x || newResolution.y !== resolution.y) {
+      setResolution(newResolution);
     }
-
-    mainLoop();
   }
 
-  useEffect(() => {
-    // 获取场景、执行渲染
-    // const scene = new Scene01(resolution.x, resolution.y);
-    const scene = new Scene02(resolution.x, resolution.y);
+  /** 场景切换 */
+  function handleSceneChange(newScene: string | null) {
+    console.log('Scene changed:', newScene);
+    setSceneKey(newScene);
+  }
 
-    // 执行渲染
-    render(scene);
-  }, [resolution]);
+  /** 是否开启MSAA抗锯齿 */
+  function handleEnableMSAA(enabled: boolean): void {
+    setMSAA(enabled);
+  }
+
+  /** 相机模式变化 */
+  function handleCameraModeChange(mode: CameraMode): void {
+    setCameraMode(mode);
+  }
+
+  /** 光栅化模式变化 */
+  function handleRenderModeChange(mode: RasterizerMode): void {
+    setRenderMode(mode);
+  }
 
   return (
     <>
@@ -100,11 +48,26 @@ function App() {
         <div className='canvas-container'>
           <canvas id='canvas' width={resolution.x} height={resolution.y} />
           <span id='fps' className='fps'>
-            FPS: 0ms
+            FPS: 0
           </span>
+          <Renderer
+            resolution={resolution}
+            sceneKey={sceneKey}
+            renderMode={renderMode}
+            cameraMode={cameraMode}
+            isMSAAEnabled={isMSAAEnabled}
+          />
         </div>
         <div className='sidebar'>
-          <Inspector initialResolution={resolution} onResolutionChange={handleResolutionChange} />
+          <Inspector
+            initialScene={sceneKey}
+            initialResolution={resolution}
+            onResolutionChange={handleResolutionChange}
+            onSceneChange={handleSceneChange}
+            onRenderModeChange={handleRenderModeChange}
+            onCameraModeChange={handleCameraModeChange}
+            onEnableMSAAChange={handleEnableMSAA}
+          />
         </div>
       </div>
     </>

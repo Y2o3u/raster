@@ -31,10 +31,20 @@ export class Pipeline {
    * @param height 高度
    * @param renderMode 光栅化器类型
    */
-  constructor(width: number, height: number, renderMode: RasterizerMode) {
+  constructor(width: number, height: number, renderMode?: RasterizerMode) {
     this.renderContext = new RenderContext();
     this.rasterizers = RasterizerList.map((rasterizer) => new rasterizer(width, height));
-    this.renderMode = renderMode;
+    this.renderMode = renderMode ?? RasterizerMode.Normal;
+  }
+
+  /** 设置渲染模式 */
+  setRenderMode(mode: RasterizerMode) {
+    this.renderMode = mode;
+  }
+
+  /** 设置是否开启MSAA抗锯齿 */
+  setEnableMSAA(enable: boolean) {
+    this.rasterizers.forEach((rasterizer) => rasterizer.setEnableMSAA(enable));
   }
 
   /**
@@ -73,8 +83,8 @@ export class Pipeline {
       const p1 = position[indices[i * 3 + 1]];
       const p2 = position[indices[i * 3 + 2]];
 
-      // todo 面剔除
-      if (!this.isCCW(p0.clone(), p1.clone(), p2.clone())) {
+      // 面剔除、超过一个三角形才触发
+      if (triangleCount > 1 && !this.isCCW(p0.clone(), p1.clone(), p2.clone())) {
         continue;
       }
 

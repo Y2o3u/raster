@@ -7,6 +7,9 @@ import { VertexRotateShader } from '@/engine/shader/vertext/vertex-rotate-shader
 
 /** 场景二、立方体 */
 export class Scene02 extends Scene {
+  /** 场景描述 */
+  static introduce = '立方体（背面剔除）';
+
   init(width: number, height: number) {
     // 初始化场景
     this.camera = new Camera(width, height, -1, -100, 90);

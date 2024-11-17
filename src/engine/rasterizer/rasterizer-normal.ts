@@ -1,5 +1,3 @@
-import { ZBuffer } from '../buffer/depth/z-buffer';
-import { FrameBuffer } from '../buffer/frame/frame-buffer';
 import { Vertex } from '../core/data/vertex';
 import { RenderContext } from '../core/render-context';
 import { barycentricInterpolation, cross, getBaryCentricCoord, getBoundBox } from '../math/utils/util';
@@ -45,7 +43,7 @@ export class RasterizerNormal extends Rasterizer {
         // 是否在三角形内
         let insideTriangle = false;
         // 根据是否开启MSAA 定义采样点
-        const samplePoints = this.openMSAA
+        const samplePoints = this.isEnableMSAA
           ? [
               [0.25, 0.25],
               [0.75, 0.25],
@@ -68,7 +66,7 @@ export class RasterizerNormal extends Rasterizer {
           let z = (1 / z0) * alpha + (1 / z1) * beta + (1 / z2) * gamma;
 
           // 深度测试、子采样点
-          if (this.openMSAA ? !this.superSampleZBuffer?.zTest(x, y, z, i) : !this.zBuffer?.zTest(x, y, z)) continue;
+          if (this.isEnableMSAA ? !this.superSampleZBuffer?.zTest(x, y, z, i) : !this.zBuffer?.zTest(x, y, z)) continue;
 
           // 透视插值矫正
           z = 1 / z;
@@ -86,7 +84,7 @@ export class RasterizerNormal extends Rasterizer {
         // RGB平均、透明度不变、使用超采样样本填充
         if (insideTriangle) {
           // 兼容没有开启MSAA
-          if (!this.openMSAA) {
+          if (!this.isEnableMSAA) {
             this.frameBuffer.setColor(x, y, this.variable.color);
           } else {
             for (let i = 0; i < samplePoints.length; i++) {

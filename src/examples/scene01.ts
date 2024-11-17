@@ -7,6 +7,9 @@ import { VertexRotateShader } from '@/engine/shader/vertext/vertex-rotate-shader
 
 /** 渲染三角形 */
 export class Scene01 extends Scene {
+  /** 场景描述 */
+  static introduce = '光栅化三角形';
+
   /** 初始化场景 */
   init(width: number, height: number) {
     this.camera = new Camera(width, height, -1, -100, 90);
