@@ -31,7 +31,7 @@ export class RasterizerNormal extends Rasterizer {
     p2.standardized();
 
     // 计算三角形面积
-    const s = cross(p1.x - p0.x, p1.y - p0.y, p2.x - p0.x, p2.y - p0.y) / 2;
+    const s = cross(p1.x - p0.x, p1.y - p0.y, p2.x - p0.x, p2.y - p0.y);
     if (s == 0) return;
 
     // 获取三角形包围盒
@@ -62,21 +62,27 @@ export class RasterizerNormal extends Rasterizer {
           let { alpha, beta, gamma } = getBaryCentricCoord(curX, curY, p0, p1, p2);
           // 不在三角形内
           if (alpha < 0 || beta < 0 || gamma < 0) continue;
-          // 插值深度
-          let z = (1 / z0) * alpha + (1 / z1) * beta + (1 / z2) * gamma;
 
-          // 深度测试、子采样点
-          if (this.isEnableMSAA ? !this.superSampleZBuffer?.zTest(x, y, z, i) : !this.zBuffer?.zTest(x, y, z)) continue;
+          // 插值深度
+          let nz = p0.z * alpha + p1.z * beta + p2.z * gamma;
 
           // 透视插值矫正
+          let z = (1 / z0) * alpha + (1 / z1) * beta + (1 / z2) * gamma;
           z = 1 / z;
           alpha = (alpha / z0) * z;
           beta = (beta / z1) * z;
           gamma = (gamma / z2) * z;
 
+          // 深度测试、子采样点
+          if (this.isEnableMSAA ? !this.superSampleZBuffer?.zTest(x, y, nz, i) : !this.zBuffer?.zTest(x, y, nz))
+            continue;
+
           // 重心坐标插值各种属性
           barycentricInterpolation(v0, v1, v2, alpha, beta, gamma, this.variable);
-          this.superSampleBuffer?.setColor(x, y, this.variable.color, i);
+
+          if (this.isEnableMSAA) {
+            this.superSampleBuffer?.setColor(x, y, this.variable.color, i);
+          }
           // 在三角形内
           insideTriangle = true;
         }
@@ -85,7 +91,8 @@ export class RasterizerNormal extends Rasterizer {
         if (insideTriangle) {
           // 兼容没有开启MSAA
           if (!this.isEnableMSAA) {
-            this.frameBuffer.setColor(x, y, this.variable.color);
+            color = renderContext.fs.main(renderContext, this.variable);
+            this.frameBuffer.setColor(x, y, color);
           } else {
             for (let i = 0; i < samplePoints.length; i++) {
               color.add(this.superSampleBuffer.getColor(x, y, i), color);
@@ -95,6 +102,8 @@ export class RasterizerNormal extends Rasterizer {
             color.z /= samplePoints.length;
             color.w = 1;
 
+            // 走一遍片段着色器
+            color = renderContext.fs.main(renderContext, this.variable);
             this.frameBuffer.setColor(x, y, color);
           }
         }

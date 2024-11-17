@@ -25,30 +25,51 @@ const Renderer: React.FC<RendererProps> = ({ resolution, sceneKey, renderMode, c
   const animationFrameId = useRef<number | null>(null);
 
   useEffect(() => {
-    if (animationFrameId.current !== null) {
-      cancelAnimationFrame(animationFrameId.current);
-    }
-    const scene = new SceneList[sceneKey as keyof typeof SceneList](resolution.x, resolution.y);
-    scene.camera.setMode(cameraMode);
-    render(scene);
+    /** 加载场景 */
+    const loadScene = async () => {
+      // 取消上一次的动画帧
+      if (animationFrameId.current !== null) {
+        cancelAnimationFrame(animationFrameId.current);
+      }
+      // 创建场景
+      const scene = new SceneList[sceneKey as keyof typeof SceneList](resolution.x, resolution.y);
+      // 异步初始化场景
+      await scene.initAsync(resolution.x, resolution.y);
+      // 设置相机模式
+      scene.camera.setMode(cameraMode);
+      // 渲染场景
+      render(scene);
+    };
+    loadScene();
   }, [resolution, sceneKey, cameraMode, isMSAAEnabled, renderMode]);
 
   function render(scene: Scene) {
     // 创建渲染管线、及初始化
     const canvas = new WebCanvas('canvas');
+    // 创建渲染管线
     const pipeline = new Pipeline(resolution.x, resolution.y);
+    // 设置抗锯齿
     pipeline.setEnableMSAA(isMSAAEnabled);
+    // 设置渲染模式
     pipeline.setRenderMode(renderMode);
 
+    // 更新FPS
     const fpsUpdater = updateFPS();
 
     // 主循环
     function mainLoop() {
+      // 清空渲染管线
       pipeline.clear();
+      // 更新调度器
       scheduler.update();
+      // 渲染场景
       renderScene(scene, pipeline);
+      // 更新FPS
       fpsUpdater();
-      canvas.render(pipeline.getFrameBuffer());
+      // 渲染到canvas
+      const frameBuffer = pipeline.getFrameBuffer();
+      canvas.render(frameBuffer);
+      // 请求下一帧
       animationFrameId.current = requestAnimationFrame(mainLoop);
     }
     mainLoop();
@@ -61,11 +82,12 @@ const Renderer: React.FC<RendererProps> = ({ resolution, sceneKey, renderMode, c
 
     // 设置渲染上下文、用于着色器
     const renderContext = pipeline.renderContext;
+
     renderContext.matView = camera.matView;
     renderContext.matViewport = camera.matViewport;
     renderContext.matOrtho = camera.matOrtho;
     renderContext.matProjection = camera.matProjection;
-    // 时间
+    // 时间更新
     renderContext.time = scheduler.getTotalTime();
     // 相机位置
     renderContext.cameraPos = camera.getPosition().xyz;

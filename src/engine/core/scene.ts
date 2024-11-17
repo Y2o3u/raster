@@ -21,6 +21,9 @@ export class Scene {
   /** 初始化场景 */
   init(width: number, height: number) {}
 
+  /** 异步初始化场景 */
+  initAsync(width: number, height: number) {}
+
   /** 添加子节点 */
   addChild(node: Node) {
     this.children.push(node);

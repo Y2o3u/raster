@@ -1,22 +1,12 @@
 import React, { useState } from 'react';
 import './inspector.scss';
-import { Button, Checkbox, Input, Select, Radio } from 'antd';
+import { Checkbox, Input, Select, Radio } from 'antd';
 import * as SceneList from '../../examples';
 import { RadioChangeEvent } from 'antd';
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
 import { RasterizerMode } from '@/engine/pipeline/pipeline';
 import { CameraMode } from '@/engine/core/camera';
-
 const { Option } = Select;
-
-function chunkArray(array: any[], size: number) {
-  const result = [];
-  for (let i = 0; i < array.length; i += size) {
-    result.push(array.slice(i, i + size));
-  }
-  return result;
-}
-
 /** 检查器组件的props */
 interface InspectorProps {
   /** 初始场景 */
@@ -45,6 +35,7 @@ function Inspector({
   onCameraModeChange,
   onEnableMSAAChange,
 }: InspectorProps) {
+  // 属性
   const [resolution, setResolution] = useState(initialResolution);
   const [selectedScene, setSelectedScene] = useState(initialScene);
 
@@ -52,19 +43,23 @@ function Inspector({
   const [cameraMode, setCameraMode] = useState(CameraMode.Perspective);
   const [isMSAAEnabled, setMSAA] = useState(false);
 
+  /** 宽度变化 */
   const handleWidthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setResolution({ ...resolution, x: parseInt(e.target.value, 10) || 0 });
   };
 
+  /** 高度变化 */
   const handleHeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setResolution({ ...resolution, y: parseInt(e.target.value, 10) || 0 });
   };
 
+  /** 分辨率变化 */
   const handleBlurOrEnter = (e: React.KeyboardEvent<HTMLInputElement> | React.FocusEvent<HTMLInputElement>) => {
     if ('key' in e && e.key !== 'Enter') return;
     onResolutionChange(resolution);
   };
 
+  /** 场景变化 */
   const handleSceneChange = (e: RadioChangeEvent) => {
     const newScene = e.target.value;
     setSelectedScene(newScene);
@@ -73,16 +68,19 @@ function Inspector({
 
   const sceneKeys = Object.keys(SceneList);
 
+  /** 渲染模式变化 */
   const handleRenderModeChange = (value: RasterizerMode) => {
     setRenderMode(value);
     onRenderModeChange(value);
   };
 
+  /** 相机模式变化 */
   const handleCameraModeChange = (value: CameraMode) => {
     setCameraMode(value);
     onCameraModeChange(value);
   };
 
+  /** 开关抗锯齿 */
   const handleMSAAChange = (e: CheckboxChangeEvent) => {
     setMSAA(e.target.checked);
     onEnableMSAAChange(e.target.checked);
@@ -133,8 +131,9 @@ function Inspector({
 
       <div className='msaa'>
         <div className='flex-center'>
-          <label className='label'>抗锯齿(MSAA):</label>
+          <label className='label'>抗锯齿(MSAA)</label>
           <Checkbox onChange={handleMSAAChange} />
+          <label className='label'>（仅支持常规光栅）</label>
         </div>
       </div>
 

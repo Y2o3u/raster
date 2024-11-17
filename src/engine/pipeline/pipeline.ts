@@ -85,7 +85,7 @@ export class Pipeline {
       const p2 = position[indices[i * 3 + 2]];
 
       // 面剔除、超过一个三角形才触发
-      if (triangleCount > 1 && !this.isCCW(p0.clone(), p1.clone(), p2.clone())) {
+      if (!this.isCCW(p0.clone(), p1.clone(), p2.clone())) {
         continue;
       }
 

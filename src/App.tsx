@@ -6,9 +6,12 @@ import * as SceneList from './examples';
 import { CameraMode } from './engine/core/camera';
 import Renderer from './component/render-comp';
 
+/** 默认场景 */
+const DefaultSceneKey = SceneList.Scene04.name;
+
 function App() {
   const [resolution, setResolution] = useState({ x: 800, y: 600 });
-  const [sceneKey, setSceneKey] = useState<string | null>(SceneList.Scene01.name);
+  const [sceneKey, setSceneKey] = useState<string | null>(DefaultSceneKey);
   const [renderMode, setRenderMode] = useState(RasterizerMode.Normal);
   const [cameraMode, setCameraMode] = useState(CameraMode.Perspective);
   const [isMSAAEnabled, setMSAA] = useState(false);
@@ -23,7 +26,6 @@ function App() {
 
   /** 场景切换 */
   function handleSceneChange(newScene: string | null) {
-    console.log('Scene changed:', newScene);
     setSceneKey(newScene);
   }
 
