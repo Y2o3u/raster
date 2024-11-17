@@ -1,0 +1,22 @@
+/**
+ * 检查器面板样式
+ */
+.Inspector {
+  label {
+    display: block;
+  }
+}
+
+// 字体缩小
+.Inspector label {
+  font-size: 12px;
+}
+
+.Inspector Input {
+  width: 100%;
+  height: 20px;
+}
+
+.Inspector Select {
+  height: 20px;
+}

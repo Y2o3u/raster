@@ -4,6 +4,10 @@ import Vec4 from '../math/vector/vec4';
 import { FrameBuffer } from '../buffer/frame/frame-buffer';
 import { ZBuffer } from '../buffer/depth/z-buffer';
 import { RenderContext } from '../core/render-context';
+import { ZBufferX1 } from '../buffer/depth/z-buffer-x1';
+import { ZBufferXN } from '../buffer/depth/z-buffer-xn';
+import { FrameBufferXN } from '../buffer/frame/frame-buffer-xn';
+import { FrameBufferX1 } from '../buffer/frame/frame-buffer-x1';
 
 export class Rasterizer {
   /** 宽度 */
@@ -11,16 +15,41 @@ export class Rasterizer {
   /** 高度 */
   protected height: number = 0;
 
-  /** z缓冲 */
+  /** 深度缓冲 */
   public zBuffer: ZBuffer;
   /** 帧缓冲 */
   public frameBuffer: FrameBuffer;
 
+  /** 超采样缓冲 */
+  public superSampleBuffer: FrameBuffer;
+  /** 超采样深度缓冲 */
+  public superSampleZBuffer: ZBuffer;
+
+  /** 是否开启MSAA抗锯齿 */
+  protected openMSAA: boolean = true;
+  /** 子像素数量 */
+  protected samples: number = 4;
+
   constructor(width: number, height: number) {
     this.width = width;
     this.height = height;
-    this.frameBuffer = new FrameBuffer(width, height);
-    this.zBuffer = new ZBuffer(width, height);
+
+    this.frameBuffer = new FrameBufferX1(width, height);
+    this.zBuffer = new ZBufferX1(width, height);
+
+    // 默认开启MSAA抗锯齿
+    this.setOpenMSAA(this.openMSAA);
+  }
+
+  /** 设置是否开启MSAA抗锯齿 */
+  setOpenMSAA(open: boolean): void {
+    this.openMSAA = open;
+
+    // 开启MSAA抗锯齿
+    if (this.openMSAA) {
+      this.superSampleBuffer = new FrameBufferXN(this.width, this.height, this.samples);
+      this.superSampleZBuffer = new ZBufferXN(this.width, this.height, this.samples);
+    }
   }
 
   /**

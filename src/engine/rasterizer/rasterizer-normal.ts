@@ -1,3 +1,4 @@
+import { ZBuffer } from '../buffer/depth/z-buffer';
 import { FrameBuffer } from '../buffer/frame/frame-buffer';
 import { Vertex } from '../core/data/vertex';
 import { RenderContext } from '../core/render-context';
@@ -9,8 +10,6 @@ import { Rasterizer } from './base-rasterize';
  * 普通光栅化器
  */
 export class RasterizerNormal extends Rasterizer {
-  /** 开启MSAA抗锯齿 */
-  private readonly msaa = true;
   /** 顶点着色器输出 */
   private readonly variable: Vertex = new Vertex();
 
@@ -28,21 +27,25 @@ export class RasterizerNormal extends Rasterizer {
     const z1 = p1.w;
     const z2 = p2.w;
 
+    // 透视除法
     p0.standardized();
     p1.standardized();
     p2.standardized();
 
+    // 计算三角形面积
     const s = cross(p1.x - p0.x, p1.y - p0.y, p2.x - p0.x, p2.y - p0.y) / 2;
     if (s == 0) return;
 
-    let boundBox = getBoundBox(this.width, this.height, p0, p1, p2);
+    // 获取三角形包围盒
+    const boundBox = getBoundBox(this.width, this.height, p0, p1, p2);
     for (let x = boundBox.x; x < boundBox.z; ++x) {
       for (let y = boundBox.y; y < boundBox.w; ++y) {
+        // 颜色
         let color = new Vec4(0, 0, 0, 1);
-        let count = 0;
-
+        // 是否在三角形内
+        let insideTriangle = false;
         // 根据是否开启MSAA 定义采样点
-        const samplePoints = this.msaa
+        const samplePoints = this.openMSAA
           ? [
               [0.25, 0.25],
               [0.75, 0.25],
@@ -52,20 +55,20 @@ export class RasterizerNormal extends Rasterizer {
           : [[0.5, 0.5]];
 
         // 几个采样点最大深度（靠近相机）
-        let maxZ = -1;
-        for (let [offsetX, offsetY] of samplePoints) {
+        for (let i = 0; i < samplePoints.length; i++) {
+          let [offsetX, offsetY] = samplePoints[i];
           let curX = x + offsetX;
           let curY = y + offsetY;
 
           // 计算重心坐标
           let { alpha, beta, gamma } = getBaryCentricCoord(curX, curY, p0, p1, p2);
           // 不在三角形内
-          if (alpha < 0 || beta < 0 || gamma < 0) {
-            continue;
-          }
-
+          if (alpha < 0 || beta < 0 || gamma < 0) continue;
+          // 插值深度
           let z = (1 / z0) * alpha + (1 / z1) * beta + (1 / z2) * gamma;
-          maxZ = Math.max(maxZ, z);
+
+          // 深度测试、子采样点
+          if (this.openMSAA ? !this.superSampleZBuffer?.zTest(x, y, z, i) : !this.zBuffer?.zTest(x, y, z)) continue;
 
           // 透视插值矫正
           z = 1 / z;
@@ -73,26 +76,29 @@ export class RasterizerNormal extends Rasterizer {
           beta = (beta / z1) * z;
           gamma = (gamma / z2) * z;
 
-          // 重心坐标插值
+          // 重心坐标插值各种属性
           barycentricInterpolation(v0, v1, v2, alpha, beta, gamma, this.variable);
-
-          color.x += this.variable.color.x;
-          color.y += this.variable.color.y;
-          color.z += this.variable.color.z;
-          color.w += this.variable.color.w;
-          count++;
+          this.superSampleBuffer?.setColor(x, y, this.variable.color, i);
+          // 在三角形内
+          insideTriangle = true;
         }
 
-        // 深度测试
-        if (!this.zBuffer.zTest(x, y, maxZ)) continue;
+        // RGB平均、透明度不变、使用超采样样本填充
+        if (insideTriangle) {
+          // 兼容没有开启MSAA
+          if (!this.openMSAA) {
+            this.frameBuffer.setColor(x, y, this.variable.color);
+          } else {
+            for (let i = 0; i < samplePoints.length; i++) {
+              color.add(this.superSampleBuffer.getColor(x, y, i), color);
+            }
+            color.x /= samplePoints.length;
+            color.y /= samplePoints.length;
+            color.z /= samplePoints.length;
+            color.w = 1;
 
-        // RGB平均、透明度不变
-        if (count > 0) {
-          color.x /= samplePoints.length;
-          color.y /= samplePoints.length;
-          color.z /= samplePoints.length;
-          color.w /= count;
-          this.frameBuffer.setColor(x, y, color);
+            this.frameBuffer.setColor(x, y, color);
+          }
         }
       }
     }
@@ -101,5 +107,7 @@ export class RasterizerNormal extends Rasterizer {
   clear() {
     this.zBuffer.clear();
     this.frameBuffer.clear();
+    this.superSampleBuffer?.clear();
+    this.superSampleZBuffer?.clear();
   }
 }

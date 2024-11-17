@@ -3,16 +3,20 @@ import './App.scss';
 
 import { useEffect } from 'react';
 import { Vec2 } from '@/engine/math/vector/vec2';
-import { Pipeline, RasterizerMode } from '@/engine/pipeline/pipleline';
 import { Scene } from './engine/core/scene';
 import { Scene01 } from './examples/scene01';
 import { WebCanvas } from './engine/platform/h5-canvas';
 import { Scheduler } from './engine/core/schedule';
 import { Scene02 } from './examples/scene02';
 import { Mat4 } from './engine/math/matrix/mat4';
+import { Pipeline, RasterizerMode } from './engine/pipeline/pipeline';
+import Inspector from './component/inspector';
+import { Layout } from 'antd';
+import { Header, Content, Footer } from 'antd/es/layout/layout';
+import Sider from 'antd/es/layout/Sider';
 
 /** Canvas分辨率 */
-const resolution = new Vec2(800, 600);
+const resolution = new Vec2(1334 / 2, 1000 / 2);
 /** 全局计时器 */
 const scheduler = new Scheduler();
 
@@ -91,9 +95,7 @@ function App() {
           <canvas id='canvas' width={resolution.x} height={resolution.y} />
         </div>
         <div className='sidebar'>
-          <button>操作1</button>
-          <button>操作2</button>
-          <button>操作3</button>
+          <Inspector x={resolution.x} y={resolution.y} />
         </div>
       </div>
     </>

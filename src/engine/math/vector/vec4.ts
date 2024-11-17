@@ -51,8 +51,8 @@ export default class Vec4 {
    * @param vec4 - 要相加的向量
    * @returns 相加后的新向量
    */
-  add(vec4: Vec4) {
-    let newVec4 = new Vec4();
+  add(vec4: Vec4, out?: Vec4) {
+    let newVec4 = out ?? new Vec4();
     newVec4.x = this.x + vec4.x;
     newVec4.y = this.y + vec4.y;
     newVec4.z = this.z + vec4.z;
