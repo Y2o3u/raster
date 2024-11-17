@@ -13,8 +13,10 @@ export class Loader {
         let context = canvas.getContext('2d');
         canvas.width = width;
         canvas.height = height;
+        // 绘制图片
         context?.drawImage(img, 0, 0, width, height);
         const imageData: any = context?.getImageData(0, 0, width, height);
+        // 释放图片
         img = undefined as any;
         resolve(imageData);
       };

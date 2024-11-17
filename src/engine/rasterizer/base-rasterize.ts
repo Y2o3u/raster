@@ -26,7 +26,7 @@ export class Rasterizer {
   public superSampleZBuffer: ZBuffer;
 
   /** 是否开启MSAA抗锯齿 */
-  protected isEnableMSAA: boolean = true;
+  protected isEnableMSAA: boolean = false;
   /** 子像素数量 */
   protected samples: number = 4;
 
@@ -36,9 +36,6 @@ export class Rasterizer {
 
     this.frameBuffer = new FrameBufferX1(width, height);
     this.zBuffer = new ZBufferX1(width, height);
-
-    // 默认开启MSAA抗锯齿
-    this.setEnableMSAA(this.isEnableMSAA);
   }
 
   /** 设置是否开启MSAA抗锯齿 */

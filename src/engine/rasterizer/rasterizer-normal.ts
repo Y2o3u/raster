@@ -52,7 +52,6 @@ export class RasterizerNormal extends Rasterizer {
             ]
           : [[0.5, 0.5]];
 
-        // 几个采样点最大深度（靠近相机）
         for (let i = 0; i < samplePoints.length; i++) {
           let [offsetX, offsetY] = samplePoints[i];
           let curX = x + offsetX;
@@ -60,11 +59,15 @@ export class RasterizerNormal extends Rasterizer {
 
           // 计算重心坐标
           let { alpha, beta, gamma } = getBaryCentricCoord(curX, curY, p0, p1, p2);
-          // 不在三角形内
+          // 不在三角形内、重心定义
           if (alpha < 0 || beta < 0 || gamma < 0) continue;
 
           // 插值深度
           let nz = p0.z * alpha + p1.z * beta + p2.z * gamma;
+
+          // 深度测试、子采样点
+          if (this.isEnableMSAA ? !this.superSampleZBuffer?.zTest(x, y, nz, i) : !this.zBuffer?.zTest(x, y, nz))
+            continue;
 
           // 透视插值矫正
           let z = (1 / z0) * alpha + (1 / z1) * beta + (1 / z2) * gamma;
@@ -72,10 +75,6 @@ export class RasterizerNormal extends Rasterizer {
           alpha = (alpha / z0) * z;
           beta = (beta / z1) * z;
           gamma = (gamma / z2) * z;
-
-          // 深度测试、子采样点
-          if (this.isEnableMSAA ? !this.superSampleZBuffer?.zTest(x, y, nz, i) : !this.zBuffer?.zTest(x, y, nz))
-            continue;
 
           // 重心坐标插值各种属性
           barycentricInterpolation(v0, v1, v2, alpha, beta, gamma, this.variable);

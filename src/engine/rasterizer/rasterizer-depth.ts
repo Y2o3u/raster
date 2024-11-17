@@ -9,9 +9,6 @@ import { Rasterizer } from './base-rasterize';
  * 深度光栅化器
  */
 export class RasterizerDepth extends Rasterizer {
-  /** 顶点着色器输出 */
-  private readonly variable: Vertex = new Vertex();
-
   /**
    * 渲染
    * @param p0 三角形顶点0
@@ -64,10 +61,13 @@ export class RasterizerDepth extends Rasterizer {
   getFrameBuffer(): Float32Array {
     let frameBuffer = this.frameBuffer.getFrameBuffer();
     for (let i = 0, len = this.zBuffer.getZBuffer().length; i < len; i++) {
+      // 将深度值映射到0-1之间
       const v = (this.zBuffer.getZByIndex(i) + 1) * 0.5;
+      // 写入frameBuffer的RGB通道
       frameBuffer[i * 4] = v;
       frameBuffer[i * 4 + 1] = v;
       frameBuffer[i * 4 + 2] = v;
+      // 写入frameBuffer的A通道
       frameBuffer[i * 4 + 3] = 1;
     }
     return frameBuffer;

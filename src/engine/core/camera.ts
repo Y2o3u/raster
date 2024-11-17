@@ -211,7 +211,7 @@ export class Camera {
   /**
    * 将标准-1~1的矩阵变换到屏幕大小的矩阵
    * 将宽/高, 由-1 ~ 1变成-w/2 ~ w/2和 h/2 ~ -h/2
-   * 注意, 这里h相当于做了一次翻转
+   * 注意, 这里-h相当于做了一次翻转、因为canvas原点在左上角
    */
   private calcMatViewportMat(): void {
     const w = this.width;
