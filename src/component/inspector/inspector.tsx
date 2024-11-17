@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './inspector.scss';
 import { Button, Checkbox, Input, Select, Radio } from 'antd';
-import * as SceneList from '../examples';
+import * as SceneList from '../../examples';
 import { RadioChangeEvent } from 'antd';
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
 import { RasterizerMode } from '@/engine/pipeline/pipeline';

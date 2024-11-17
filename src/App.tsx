@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './App.scss';
 import { RasterizerMode } from './engine/pipeline/pipeline';
-import Inspector from './component/inspector';
+import Inspector from './component/inspector/inspector';
 import * as SceneList from './examples';
 import { CameraMode } from './engine/core/camera';
 import Renderer from './component/render-comp';
