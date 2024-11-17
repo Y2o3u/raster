@@ -32,7 +32,7 @@ export class ZBuffer {
   }
 
   /**
-   * 深度测试
+   * 深度测试、通过自动写入深度
    * @param x 像素x坐标
    * @param y 像素y坐标
    * @param z 深度值
@@ -40,11 +40,13 @@ export class ZBuffer {
   zTest(x: number, y: number, z: number): boolean {
     // 透视除法后、深度值范围在[-1, 1]之间
     if (z > 1 || z < -1) return false;
-    return z > this.getZ(x, y);
+    const pass = z > this.getZ(x, y);
+    if (pass) this.setZ(x, y, z);
+    return pass;
   }
 
   /** 清除深度缓冲 */
   clear(): void {
-    this.zBuffer.fill(0);
+    this.zBuffer.fill(-1);
   }
 }

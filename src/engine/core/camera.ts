@@ -59,7 +59,7 @@ export class Camera {
   /** 投影矩阵 */
   private _matProjection: Mat4;
 
-  constructor(width?: number, height?: number, near?: number, far?: number, fov?: number) {
+  constructor(width: number, height: number, near: number, far: number, fov: number) {
     this.position = new Vec4(0, 0, 0, 1);
     this.direction = new Vec3(0, 0, -1);
     this.up = new Vec3(0, 1, 0);
@@ -68,16 +68,14 @@ export class Camera {
     this.near = near;
     this.far = far;
     this.fov = fov;
-    // 计算投影矩阵
-    this.calcProjectionMat();
   }
 
   /** 设置位置 */
   setPosition(x: number, y: number, z: number) {
     this.position.set(x, y, z, 1);
-    this.calcMatViewportMat();
-    this.calcPerspectiveMat();
     this.calcMatView();
+    this.calcMatViewportMat();
+    this.calcProjectionMat();
   }
 
   /** 获取当前位置 */
@@ -90,13 +88,14 @@ export class Camera {
     // 当前位置
     this.direction.fromVec3(this.position.xyz.sub(at));
     this.direction.normalize();
+    this.calcProjectionMat();
     this.calcMatView();
-    this.calcPerspectiveMat();
   }
 
   /** 设置相机模式 */
   setMode(mode: CameraMode) {
     this.mode = mode;
+    this.calcProjectionMat();
   }
 
   /** 获取相机模式 */
@@ -117,6 +116,11 @@ export class Camera {
   /** 获取投影矩阵 */
   get matProjection(): Mat4 {
     return this._matProjection;
+  }
+
+  /** 获取正交矩阵 */
+  get matOrtho(): Mat4 {
+    return this._matOrtho;
   }
 
   /** 计算屏幕矩阵 */
@@ -152,7 +156,7 @@ export class Camera {
       0, 0, 1, -this.position.z,
       0, 0, 0, 1
 );
-    this._matView = matAngle.multiply(matMove);
+    this._matView = matMove.multiply(matAngle);
   }
 
   /**
@@ -161,10 +165,19 @@ export class Camera {
    * @private
    */
   private calcMatOrthographic(): Mat4 {
-    const t = Math.tan((this.fov * Math.PI) / 360) * Math.abs(this.near);
+    /**
+     * tan(fov/2) = t / n
+     */
+    const t = Math.tan(((this.fov / 180) * Math.PI) / 2) * Math.abs(this.near);
     const b = -t;
+    /**
+     *  nx     r
+     * ---- = ---
+     *  ny     t
+     */
     const r = (this.width / this.height) * t;
     const l = -r;
+
     const n = this.near;
     const f = this.far;
     // prettier-ignore
@@ -188,8 +201,10 @@ export class Camera {
       0, 0, n + f, -n * f,
       0, 0, 1, 0
     );
-    const matOrth = this.calcMatOrthographic();
-    this._matPerspective = matOrth.multiply(matPerspectiveOrth);
+
+    // 透视投影矩阵 = 正交矩阵 * 透视->正交矩阵 （从右到左）
+    const matOrtho = this.calcMatOrthographic();
+    this._matPerspective = matOrtho.multiply(matPerspectiveOrth);
     return this._matPerspective;
   }
 

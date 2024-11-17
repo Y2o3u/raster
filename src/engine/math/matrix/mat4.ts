@@ -59,29 +59,29 @@ export class Mat4 {
   /**
    * 矩阵转置
    */
-  public transpose(): void {
-    const temp = [
-      this.elements[1],
-      this.elements[2],
-      this.elements[3],
-      this.elements[6],
-      this.elements[7],
-      this.elements[11],
-    ];
+  public transpose(): Mat4 {
+    const result = new Mat4();
+    const e = this.elements;
+    const r = result.elements;
 
-    this.elements[1] = this.elements[4];
-    this.elements[2] = this.elements[8];
-    this.elements[3] = this.elements[12];
-    this.elements[6] = this.elements[9];
-    this.elements[7] = this.elements[13];
-    this.elements[11] = this.elements[14];
+    r[0] = e[0];
+    r[1] = e[4];
+    r[2] = e[8];
+    r[3] = e[12];
+    r[4] = e[1];
+    r[5] = e[5];
+    r[6] = e[9];
+    r[7] = e[13];
+    r[8] = e[2];
+    r[9] = e[6];
+    r[10] = e[10];
+    r[11] = e[14];
+    r[12] = e[3];
+    r[13] = e[7];
+    r[14] = e[11];
+    r[15] = e[15];
 
-    this.elements[4] = temp[0];
-    this.elements[8] = temp[1];
-    this.elements[12] = temp[2];
-    this.elements[9] = temp[3];
-    this.elements[13] = temp[4];
-    this.elements[14] = temp[5];
+    return result;
   }
 
   /**
@@ -132,6 +132,7 @@ export class Mat4 {
     const a = this.elements;
     const b = value.elements;
 
+    // 矩阵乘法 a取列、b取行
     for (let i = 0; i < 4; i++) {
       for (let j = 0; j < 4; j++) {
         let sum = 0;

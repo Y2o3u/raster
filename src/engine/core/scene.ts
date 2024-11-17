@@ -11,11 +11,15 @@ export class Scene {
   /** 子节点 */
   children: Node[];
 
-  constructor() {
+  constructor(width: number, height: number) {
     this.children = [];
     this.sphereLight = new SphereLight();
-    this.camera = new Camera();
+    this.camera = new Camera(width, height, -0.1, -100, 90);
+    this.init(width, height);
   }
+
+  /** 初始化场景 */
+  init(width: number, height: number) {}
 
   /** 添加子节点 */
   addChild(node: Node) {

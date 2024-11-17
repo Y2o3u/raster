@@ -7,12 +7,21 @@ import { Texture } from './data/texture';
 import { VAO } from './data/vao';
 import { VBO } from './data/vbo';
 
+/** 旋转轴枚举 */
+export enum RotationAxis {
+  X = 'x',
+  Y = 'y',
+  Z = 'z',
+}
+
 /** 节点 */
 export class Node {
   /** 位置信息 */
   position: Vec3;
   /** 缩放 */
   scale: Vec3;
+  /** 旋转 */
+  rotation: Vec3;
 
   /** 顶点缓冲 */
   vertexBuffer: VBO;
@@ -39,7 +48,7 @@ export class Node {
 
     this.position = new Vec3(0, 0, 0);
     this.scale = new Vec3(1, 1, 1);
-
+    this.rotation = new Vec3(0, 0, 0);
     // 添加默认材质
     this.vs = new VertexShader();
     this.fs = new FragmentShader();
@@ -48,20 +57,59 @@ export class Node {
   /** 更新世界矩阵 */
   updateWorldMatrix(): void {
     // prettier-ignore
-    this.matWorld = Mat4.fromValues(
-      this.scale.x, 0, 0, this.position.x,
-      0, this.scale.y, 0, this.position.y,
-      0, 0, this.scale.z, this.position.z,
+    const matMove = Mat4.fromValues(
+      1, 0, 0, this.position.x,
+      0, 1, 0, this.position.y,
+      0, 0, 1, this.position.z,
       0, 0, 0, 1
     );
-    // 更新逆矩阵
-    this.matWorldIT = this.matWorld.invert();
+    // prettier-ignore
+    const matScale = Mat4.fromValues(
+      this.scale.x, 0, 0, 0,
+      0, this.scale.y, 0, 0,
+      0, 0, this.scale.z, 0,
+      0, 0, 0, 1
+    );
+
+    // prettier-ignore
+    const matMoveIT = Mat4.fromValues(
+      1, 0, 0, -this.position.x,
+      0, 1, 0, -this.position.y,
+      0, 0, 1, -this.position.z,
+      0, 0, 0, 1
+    );
+
+    // prettier-ignore
+    const matScaleIT = Mat4.fromValues(
+      1 / this.scale.x, 0, 0, 0,
+      0, 1 / this.scale.y, 0, 0,
+      0, 0, 1 / this.scale.z, 0,
+      0, 0, 0, 1
+    );
+
+    // 添加旋转矩阵
+    const matRotateX = Mat4.rotationX(this.rotation.x);
+    const matRotateY = Mat4.rotationY(this.rotation.y);
+    const matRotateZ = Mat4.rotationZ(this.rotation.z);
+    const matRotate = matRotateX.multiply(matRotateY).multiply(matRotateZ);
+    // 旋转矩阵的逆、等于旋转矩阵的转置
+    const matRotateIT = matRotate.transpose();
+
+    this.matWorld = matMove.multiply(matRotate).multiply(matScale);
+    this.matWorldIT = matScaleIT.multiply(matRotateIT).multiply(matMoveIT);
   }
 
   /** 设置位置 */
   setPosition(position: Vec3): void {
     if (position.equals(this.position)) return;
     this.position = position;
+    this.updateWorldMatrix();
+  }
+
+  /** 设置旋转 */
+  setRotationAxis(axis: RotationAxis, value: number): void {
+    if (this.rotation[axis] === value) return;
+    this.rotation[axis] = value;
     this.updateWorldMatrix();
   }
 

@@ -9,6 +9,8 @@ import { Rasterizer } from './base-rasterize';
  * 普通光栅化器
  */
 export class RasterizerNormal extends Rasterizer {
+  /** 开启MSAA抗锯齿 */
+  private readonly msaa = true;
   /** 顶点着色器输出 */
   private readonly variable: Vertex = new Vertex();
 
@@ -39,14 +41,18 @@ export class RasterizerNormal extends Rasterizer {
         let color = new Vec4(0, 0, 0, 1);
         let count = 0;
 
-        // 定义4x4的采样点
-        const samplePoints = [
-          [0.25, 0.25],
-          [0.75, 0.25],
-          [0.25, 0.75],
-          [0.75, 0.75],
-        ];
+        // 根据是否开启MSAA 定义采样点
+        const samplePoints = this.msaa
+          ? [
+              [0.25, 0.25],
+              [0.75, 0.25],
+              [0.25, 0.75],
+              [0.75, 0.75],
+            ]
+          : [[0.5, 0.5]];
 
+        // 几个采样点最大深度（靠近相机）
+        let maxZ = -1;
         for (let [offsetX, offsetY] of samplePoints) {
           let curX = x + offsetX;
           let curY = y + offsetY;
@@ -58,8 +64,10 @@ export class RasterizerNormal extends Rasterizer {
             continue;
           }
 
-          // 透视插值矫正
           let z = (1 / z0) * alpha + (1 / z1) * beta + (1 / z2) * gamma;
+          maxZ = Math.max(maxZ, z);
+
+          // 透视插值矫正
           z = 1 / z;
           alpha = (alpha / z0) * z;
           beta = (beta / z1) * z;
@@ -67,6 +75,7 @@ export class RasterizerNormal extends Rasterizer {
 
           // 重心坐标插值
           barycentricInterpolation(v0, v1, v2, alpha, beta, gamma, this.variable);
+
           color.x += this.variable.color.x;
           color.y += this.variable.color.y;
           color.z += this.variable.color.z;
@@ -74,14 +83,16 @@ export class RasterizerNormal extends Rasterizer {
           count++;
         }
 
+        // 深度测试
+        if (!this.zBuffer.zTest(x, y, maxZ)) continue;
+
+        // RGB平均、透明度不变
         if (count > 0) {
-          color.x /= 4;
-          color.y /= 4;
-          color.z /= 4;
+          color.x /= samplePoints.length;
+          color.y /= samplePoints.length;
+          color.z /= samplePoints.length;
           color.w /= count;
           this.frameBuffer.setColor(x, y, color);
-        } else {
-          this.frameBuffer.setColor(x, y, new Vec4(0, 0, 0, 1));
         }
       }
     }

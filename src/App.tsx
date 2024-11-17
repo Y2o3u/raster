@@ -8,6 +8,8 @@ import { Scene } from './engine/core/scene';
 import { Scene01 } from './examples/scene01';
 import { WebCanvas } from './engine/platform/h5-canvas';
 import { Scheduler } from './engine/core/schedule';
+import { Scene02 } from './examples/scene02';
+import { Mat4 } from './engine/math/matrix/mat4';
 
 /** Canvas分辨率 */
 const resolution = new Vec2(800, 600);
@@ -47,6 +49,7 @@ function renderScene(scene: Scene, pipeline: Pipeline) {
   const renderContext = pipeline.renderContext;
   renderContext.matView = camera.matView;
   renderContext.matViewport = camera.matViewport;
+  renderContext.matOrtho = camera.matOrtho;
   renderContext.matProjection = camera.matProjection;
 
   // 将相关数据填充到renderContext中、主要用于着色器
@@ -63,7 +66,7 @@ function renderScene(scene: Scene, pipeline: Pipeline) {
     renderContext.matWorld = node.matWorld;
     renderContext.matWorldIT = node.matWorldIT;
     // 计算MVP变换矩阵、从右到左
-    const matMvp = renderContext.matProjection.multiply(renderContext.matView).multiply(renderContext.matWorld);
+    const matMvp = renderContext.matProjection.multiply(renderContext.matView).multiply(node.matWorld);
     renderContext.matMVP = matMvp;
     renderContext.vs = node.vs;
     renderContext.fs = node.fs;
@@ -74,7 +77,8 @@ function renderScene(scene: Scene, pipeline: Pipeline) {
 
 function App() {
   // 获取场景、执行渲染
-  const scene = new Scene01(resolution.x, resolution.y);
+  // const scene = new Scene01(resolution.x, resolution.y);
+  const scene = new Scene02(resolution.x, resolution.y);
 
   useEffect(() => {
     render(scene);

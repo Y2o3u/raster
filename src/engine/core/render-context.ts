@@ -12,6 +12,8 @@ export class RenderContext {
   /** 世界坐标系转局部坐标系 */
   matWorldIT: Mat4;
 
+  /** 正交矩阵 */
+  matOrtho: Mat4;
   /** 视口变换矩阵 */
   matViewport: Mat4;
   /** 视图变换矩阵 */

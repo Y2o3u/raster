@@ -27,7 +27,11 @@ export class RasterizerTriangle extends Rasterizer {
   }
 
   /**
-   * https://zhuanlan.zhihu.com/p/74990578
+   * 画线
+   * @param x0 起点x坐标
+   * @param y0 起点y坐标
+   * @param x1 终点x坐标
+   * @param y1 终点y坐标
    */
   private line(x0: number, y0: number, x1: number, y1: number): void {
     x0 = Math.round(x0);
