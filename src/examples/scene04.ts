@@ -1,5 +1,6 @@
 import { Camera, CameraMode } from '@/engine/core/camera';
 import { Texture } from '@/engine/core/data/texture';
+import { Material } from '@/engine/core/material';
 import { Node, RotationAxis } from '@/engine/core/node';
 import { Scene } from '@/engine/core/scene';
 import { Loader } from '@/engine/math/utils/file-loader';
@@ -27,6 +28,7 @@ export class Scene04 extends Scene {
     // const vertex = ObjParse.convertToVAO(spotObj);
     // const texture = await Loader.loadImg(Png.AfricanHead);
 
+    // 加载奶牛模型
     const spotObj = await Loader.loadText(Obj.Spot);
     const vertex = ObjParse.convertToVAO(spotObj);
     const texture = await Loader.loadImg(Png.Spot);
@@ -35,8 +37,11 @@ export class Scene04 extends Scene {
     const spot = new Node();
     spot.setVBO(vertex, 3, 2, 3, 3, 0);
     spot.setRotationAxis(RotationAxis.X, 30);
-    spot.vs = new VertexRotateShader();
-    spot.fs = new FragmentTextureShader();
+
+    // 创建一个新的材质
+    const material = new Material(new VertexRotateShader(), new FragmentTextureShader());
+    spot.setMaterial(material);
+
     spot.setTexture(new Texture(texture));
     this.addChild(spot);
   }

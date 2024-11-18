@@ -21,11 +21,12 @@ export class RasterizerNormal extends Rasterizer {
    * @param v2 三角形顶点2的顶点数据
    */
   run(p0: Vec4, p1: Vec4, p2: Vec4, v0: Vertex, v1: Vertex, v2: Vertex, renderContext: RenderContext): void {
+    // 经过投影变换、深度值在w分量上
     const z0 = p0.w;
     const z1 = p1.w;
     const z2 = p2.w;
 
-    // 透视除法
+    // 透视除法、将w分量归一化、参考齐次坐标
     p0.standardized();
     p1.standardized();
     p2.standardized();
@@ -68,13 +69,13 @@ export class RasterizerNormal extends Rasterizer {
           let z = (alpha * p0.z) / z0 + (beta * p1.z) / z1 + (gamma * p2.z) / z2;
           z *= Z;
 
-          // 深度测试、子采样点
-          if (this.isEnableMSAA ? !this.superSampleZBuffer?.zTest(x, y, z, i) : !this.zBuffer?.zTest(x, y, z)) continue;
-
           // 透视矫正
           alpha *= Z / z0;
           beta *= Z / z1;
           gamma *= Z / z2;
+
+          // 深度测试、子采样点
+          if (this.isEnableMSAA ? !this.superSampleZBuffer?.zTest(x, y, z, i) : !this.zBuffer?.zTest(x, y, z)) continue;
 
           // 重心坐标插值各种属性
           barycentricInterpolation(v0, v1, v2, alpha, beta, gamma, this.variable);

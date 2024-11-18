@@ -1,5 +1,6 @@
 import { Camera, CameraMode } from '@/engine/core/camera';
 import { Texture } from '@/engine/core/data/texture';
+import { Material } from '@/engine/core/material';
 import { Node, RotationAxis } from '@/engine/core/node';
 import { Scene } from '@/engine/core/scene';
 import { Primitives } from '@/engine/geometry/primitives';
@@ -33,9 +34,9 @@ export class Scene03 extends Scene {
     const spot = await Loader.loadImg(Png.Spot);
     cube.texture = new Texture(spot);
 
-    // 设置着色器
-    cube.vs = new VertexRotateShader();
-    cube.fs = new FragmentTextureShader();
+    // 创建一个新的材质
+    const material = new Material(new VertexRotateShader(), new FragmentTextureShader());
+    cube.setMaterial(material);
 
     this.addChild(cube);
   }

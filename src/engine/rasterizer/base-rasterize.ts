@@ -9,6 +9,7 @@ import { ZBufferXN } from '../buffer/depth/z-buffer-xn';
 import { FrameBufferXN } from '../buffer/frame/frame-buffer-xn';
 import { FrameBufferX1 } from '../buffer/frame/frame-buffer-x1';
 
+/** 光栅化器基类 */
 export class Rasterizer {
   /** 宽度 */
   protected width: number = 0;

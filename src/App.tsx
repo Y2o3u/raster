@@ -7,11 +7,11 @@ import { CameraMode } from './engine/core/camera';
 import Renderer from './component/render-comp';
 
 /** 默认场景 */
-const DefaultSceneKey = SceneList.Scene04.name;
+const DefaultScene = SceneList.Scene02;
 
 function App() {
   const [resolution, setResolution] = useState({ x: 800, y: 600 });
-  const [sceneKey, setSceneKey] = useState<string | null>(DefaultSceneKey);
+  const [sceneKey, setSceneKey] = useState<string | null>(DefaultScene.name);
   const [renderMode, setRenderMode] = useState(RasterizerMode.Normal);
   const [cameraMode, setCameraMode] = useState(CameraMode.Perspective);
   const [isMSAAEnabled, setMSAA] = useState(false);

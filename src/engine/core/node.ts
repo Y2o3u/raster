@@ -6,6 +6,8 @@ import { VertexShader } from '../shader/vertext/vertex-shader';
 import { Texture } from './data/texture';
 import { VAO } from './data/vao';
 import { VBO } from './data/vbo';
+import { Material } from './material';
+import { Mesh } from './mesh';
 
 /** 旋转轴枚举 */
 export enum RotationAxis {
@@ -23,35 +25,32 @@ export class Node {
   /** 旋转 */
   rotation: Vec3;
 
-  /** 顶点缓冲 */
-  vertexBuffer: VBO;
-  /** 索引缓冲 */
-  indexBuffer: number[];
+  /** 网格 */
+  mesh: Mesh;
+  /** 材质 */
+  material: Material;
 
   /** 世界矩阵 */
   matWorld: Mat4;
   /** 世界矩阵的逆矩阵 */
   matWorldIT: Mat4;
 
-  /** 理论上可以封装一层 material: Material 存放着色器 */
-  /** 顶点着色器 */
-  vs: VertexShader;
-  /** 片元着色器 */
-  fs: FragmentShader;
-
   /** 纹理 */
   texture: Texture;
 
   constructor() {
+    // 初始化世界矩阵
     this.matWorld = Mat4.identity();
     this.matWorldIT = Mat4.identity();
 
+    // 初始化网格和材质
+    this.mesh = new Mesh(null, []);
+    this.material = new Material(new VertexShader(), new FragmentShader());
+
+    // 初始化位置、缩放、旋转
     this.position = new Vec3(0, 0, 0);
     this.scale = new Vec3(1, 1, 1);
     this.rotation = new Vec3(0, 0, 0);
-    // 添加默认材质
-    this.vs = new VertexShader();
-    this.fs = new FragmentShader();
   }
 
   /** 更新世界矩阵 */
@@ -107,6 +106,13 @@ export class Node {
   }
 
   /** 设置旋转 */
+  setRotation(rotation: Vec3): void {
+    if (rotation.equals(this.rotation)) return;
+    this.rotation = rotation;
+    this.updateWorldMatrix();
+  }
+
+  /** 设置旋转 */
   setRotationAxis(axis: RotationAxis, value: number): void {
     if (this.rotation[axis] === value) return;
     this.rotation[axis] = value;
@@ -123,6 +129,16 @@ export class Node {
     if (scale.equals(this.scale)) return;
     this.scale = scale;
     this.updateWorldMatrix();
+  }
+
+  /** 获取材质 */
+  getMaterial(): Material {
+    return this.material;
+  }
+
+  /** 设置材质 */
+  setMaterial(material: Material): void {
+    this.material = material;
   }
 
   /**
@@ -142,28 +158,18 @@ export class Node {
     normalSize: number,
     tangentSize: number
   ): void {
-    this.vertexBuffer = VAO2VBO(vao, positionSize, uvSize, colorSize, normalSize, tangentSize);
-    if (vao.indices) this.indexBuffer = vao.indices;
-  }
-
-  /** 设置索引缓冲 */
-  setIndexBuffer(indexBuffer: number[]) {
-    this.indexBuffer = indexBuffer;
+    const vertexBuffer = VAO2VBO(vao, positionSize, uvSize, colorSize, normalSize, tangentSize);
+    this.mesh.setVertexBuffer(vertexBuffer);
+    if (vao.indices) this.mesh.setIndexBuffer(vao.indices);
   }
 
   /** 获取顶点缓冲 */
   getVertexBuffer() {
-    return this.vertexBuffer;
+    return this.mesh.getVertexBuffer();
   }
 
   /** 获取索引缓冲 */
   getIndicesBuffer() {
-    return this.indexBuffer;
-  }
-
-  /** 设置着色器 */
-  setShader(vs?: VertexShader, fs?: FragmentShader) {
-    this.vs = vs;
-    this.fs = fs;
+    return this.mesh.getIndexBuffer();
   }
 }
