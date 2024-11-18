@@ -1,5 +1,5 @@
 import { Camera, CameraMode } from '@/engine/core/camera';
-import { Node } from '@/engine/core/node';
+import { Node, RotationAxis } from '@/engine/core/node';
 import { Scene } from '@/engine/core/scene';
 import { Primitives } from '@/engine/geometry/primitives';
 import { Vec3 } from '@/engine/math/vector/vec3';
@@ -16,15 +16,16 @@ export class Scene01 extends Scene {
     this.camera.setMode(CameraMode.Perspective);
 
     // 原本相机应该放在0，0，0、看向0，0，-1。为了三角形少填一个z，所以设置为 0，0，-1。效果一样
-    this.camera.setPosition(0, 0, 1);
+    this.camera.setPosition(0, 0, 2);
     this.camera.lookAt(new Vec3(0, 0, 0));
 
     /** 三角形节点 */
     const triangle = new Node();
     /** 设置顶点数据 */
     triangle.setVBO(Primitives.triangle(), 3, 0, 3, 0, 0);
-    triangle.vs = new VertexRotateShader();
+    // triangle.vs = new VertexRotateShader();
     triangle.setPosition(new Vec3(0, 0, -0.1));
+    triangle.setRotationAxis(RotationAxis.Y, 30);
     // 设置shader、通常在材质上
     this.addChild(triangle);
   }

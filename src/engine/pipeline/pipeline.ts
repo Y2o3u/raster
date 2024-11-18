@@ -11,7 +11,7 @@ import { RasterizerDepth } from '../rasterizer/rasterizer-depth';
 /** 渲染器列表 */
 const RasterizerList = [RasterizerTriangle, RasterizerNormal, RasterizerDepth];
 
-/** 渲染模式 */
+/** 光栅化模式 */
 export enum RasterizerMode {
   Triangle,
   Normal,

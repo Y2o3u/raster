@@ -62,19 +62,19 @@ export class RasterizerNormal extends Rasterizer {
           // 不在三角形内、重心定义
           if (alpha < 0 || beta < 0 || gamma < 0) continue;
 
-          // 插值深度
-          let nz = p0.z * alpha + p1.z * beta + p2.z * gamma;
+          // 通过投影后三角形内的点P'的α'、β'、γ'，计算出投影前三角形内的点P的深度值
+          // https://blog.csdn.net/Motarookie/article/details/124284471
+          const Z = 1 / (alpha / z0 + beta / z1 + gamma / z2);
+          let z = (alpha * p0.z) / z0 + (beta * p1.z) / z1 + (gamma * p2.z) / z2;
+          z *= Z;
 
           // 深度测试、子采样点
-          if (this.isEnableMSAA ? !this.superSampleZBuffer?.zTest(x, y, nz, i) : !this.zBuffer?.zTest(x, y, nz))
-            continue;
+          if (this.isEnableMSAA ? !this.superSampleZBuffer?.zTest(x, y, z, i) : !this.zBuffer?.zTest(x, y, z)) continue;
 
-          // 透视插值矫正
-          let z = (1 / z0) * alpha + (1 / z1) * beta + (1 / z2) * gamma;
-          z = 1 / z;
-          alpha = (alpha / z0) * z;
-          beta = (beta / z1) * z;
-          gamma = (gamma / z2) * z;
+          // 透视矫正
+          alpha *= Z / z0;
+          beta *= Z / z1;
+          gamma *= Z / z2;
 
           // 重心坐标插值各种属性
           barycentricInterpolation(v0, v1, v2, alpha, beta, gamma, this.variable);

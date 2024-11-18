@@ -46,7 +46,14 @@ export class RasterizerDepth extends Rasterizer {
         if (alpha < 0 || beta < 0 || gamma < 0) continue;
 
         // 插值深度
-        const z = (1 / z0) * alpha + (1 / z1) * beta + (1 / z2) * gamma;
+        // let z = (1 / z0) * alpha + (1 / z1) * beta + (1 / z2) * gamma;
+
+        // 通过投影后三角形内的点P'的α'、β'、γ'，计算出投影前三角形内的点P的深度值
+        const Z = 1 / (alpha / z0 + beta / z1 + gamma / z2);
+        // 插值深度
+        let z = (alpha * p0.z) / z0 + (beta * p1.z) / z1 + (gamma * p2.z) / z2;
+        // 矫正深度
+        z *= Z;
 
         // 深度测试
         if (!this.zBuffer.zTest(x, y, z)) continue;
