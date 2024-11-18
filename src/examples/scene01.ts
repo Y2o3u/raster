@@ -1,4 +1,5 @@
 import { Camera, CameraMode } from '@/engine/core/camera';
+import { Material } from '@/engine/core/material';
 import { Node } from '@/engine/core/node';
 import { Scene } from '@/engine/core/scene';
 import { Primitives } from '@/engine/geometry/primitives';
@@ -24,6 +25,9 @@ export class Scene01 extends Scene {
     /** 设置顶点数据 */
     triangle.setVBO(Primitives.triangle(), 3, 0, 3, 0, 0);
     // triangle.vs = new VertexRotateShader();
+    const material = triangle.getMaterial();
+    triangle.setMaterial(material);
+
     triangle.setPosition(new Vec3(0, 0, -0.1));
     triangle.setRotation(new Vec3(0, 0, 30));
     // 设置shader、通常在材质上

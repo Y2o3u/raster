@@ -32,10 +32,11 @@ export class Scene03 extends Scene {
 
     // 加载纹理
     const spot = await Loader.loadImg(Png.Spot);
-    cube.texture = new Texture(spot);
 
     // 创建一个新的材质
     const material = new Material(new VertexRotateShader(), new FragmentTextureShader());
+    const texture = new Texture(spot);
+    material.setTexture(texture);
     cube.setMaterial(material);
 
     this.addChild(cube);

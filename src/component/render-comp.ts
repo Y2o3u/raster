@@ -104,10 +104,11 @@ const Renderer: React.FC<RendererProps> = ({ resolution, sceneKey, renderMode, c
       renderContext.matWorldIT = node.matWorldIT;
       // 计算MVP矩阵
       renderContext.matMVP = renderContext.matProjection.multiply(renderContext.matView).multiply(node.matWorld);
+      // 节点材质数据
       const material = node.getMaterial();
       renderContext.vs = material.getVertexShader();
       renderContext.fs = material.getFragmentShader();
-      renderContext.textures[0] = node.texture;
+      renderContext.textures[0] = material.getTexture();
       // 渲染节点
       pipeline.renderNode(node);
     }

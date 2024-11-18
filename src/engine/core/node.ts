@@ -35,9 +35,6 @@ export class Node {
   /** 世界矩阵的逆矩阵 */
   matWorldIT: Mat4;
 
-  /** 纹理 */
-  texture: Texture;
-
   constructor() {
     // 初始化世界矩阵
     this.matWorld = Mat4.identity();
@@ -121,7 +118,7 @@ export class Node {
 
   /** 设置纹理 */
   setTexture(texture: Texture): void {
-    this.texture = texture;
+    this.material.setTexture(texture);
   }
 
   /** 设置缩放 */
