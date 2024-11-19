@@ -60,6 +60,7 @@ export class RasterizerNormal extends Rasterizer {
 
           // 计算重心坐标
           let { alpha, beta, gamma } = getBaryCentricCoord(curX, curY, p0, p1, p2);
+
           // 不在三角形内、重心定义
           if (alpha < 0 || beta < 0 || gamma < 0) continue;
 

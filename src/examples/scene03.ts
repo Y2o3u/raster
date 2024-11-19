@@ -27,11 +27,11 @@ export class Scene03 extends Scene {
 
     // 创建立方体
     const cube = new Node();
+    cube.setRotation(new Vec3(30, 0, 0));
     cube.setVBO(Primitives.cube(), 3, 2, 3, 0, 0);
-    cube.setRotationAxis(RotationAxis.X, 30);
 
     // 加载纹理
-    const spot = await Loader.loadImg(Png.Spot);
+    const spot = await Loader.loadImg(Png.Box);
 
     // 创建一个新的材质
     const material = new Material(new VertexRotateShader(), new FragmentTextureShader());
