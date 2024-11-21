@@ -190,6 +190,11 @@ export class Vec2 {
     return out;
   }
 
+  /** 叉乘 */
+  public cross(other: Vec2): number {
+    return this.x * other.y - this.y * other.x;
+  }
+
   /**
    * 创建当前向量的反向向量
    * @returns 新的反向Vec2实例

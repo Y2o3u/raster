@@ -228,6 +228,19 @@ export class Vec3 {
   }
 
   /**
+   * 叉乘
+   * @param other 另一个向量
+   * @returns 叉乘结果
+   */
+  cross(other: Vec3): Vec3 {
+    return new Vec3(
+      this.y * other.z - this.z * other.y,
+      this.z * other.x - this.x * other.z,
+      this.x * other.y - this.y * other.x
+    );
+  }
+
+  /**
    * 检查两个向量是否相等
    * @param v 另一个向量
    * @returns 是否相等

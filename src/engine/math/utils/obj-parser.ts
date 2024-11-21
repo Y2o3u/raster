@@ -58,6 +58,7 @@ export class ObjParse {
     };
   }
 
+  /** 应用顶点 */
   private static applyVert(
     set: Set<string>,
     triangle: string,
@@ -79,6 +80,7 @@ export class ObjParse {
     return true;
   }
 
+  /** 查找到f对应顶点的 uv、normal、position 值记录到 对应的数组中 */
   private static applyInfo(line: string, info: number[], size: number): void {
     if (line == null) {
       console.log(line);

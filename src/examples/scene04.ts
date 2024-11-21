@@ -23,11 +23,6 @@ export class Scene04 extends Scene {
     this.camera.setPosition(0, 0, 2);
     this.camera.lookAt(new Vec3(0, 0, 0));
 
-    // 初始化场景
-    // const spotObj = await Loader.loadText(Obj.AfricanHead);
-    // const vertex = ObjParse.convertToVAO(spotObj);
-    // const texture = await Loader.loadImg(Png.AfricanHead);
-
     // 加载奶牛模型
     const spotObj = await Loader.loadText(Obj.Spot);
     const vertex = ObjParse.convertToVAO(spotObj);
@@ -36,7 +31,7 @@ export class Scene04 extends Scene {
     // 创建节点
     const spot = new Node();
     spot.setVBO(vertex, 3, 2, 3, 3, 0);
-    spot.setRotationAxis(RotationAxis.X, 30);
+    spot.setRotation(new Vec3(30, 0, 0));
 
     // 创建一个新的材质
     const material = new Material(new VertexRotateShader(), new FragmentTextureShader());

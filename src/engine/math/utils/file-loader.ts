@@ -24,7 +24,7 @@ export class Loader {
     });
   }
 
-  /** 其他文件加载 */
+  /** 文本文件加载、用于obj模型 */
   static loadText(path: string): Promise<string> {
     return new Promise((resolve, reject) => {
       let text = '';

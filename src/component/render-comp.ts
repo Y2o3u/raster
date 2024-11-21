@@ -27,14 +27,14 @@ const Renderer: React.FC<RendererProps> = ({ resolution, sceneKey, renderMode, c
   useEffect(() => {
     /** 加载场景 */
     const loadScene = async () => {
-      // 取消上一次的动画帧
-      if (animationFrameId.current !== null) {
-        cancelAnimationFrame(animationFrameId.current);
-      }
       // 创建场景
       const scene = new SceneList[sceneKey as keyof typeof SceneList](resolution.x, resolution.y);
       // 异步初始化场景
       await scene.initAsync(resolution.x, resolution.y);
+      // 场景加载完、再取消、避免闪烁
+      if (animationFrameId.current !== null) {
+        cancelAnimationFrame(animationFrameId.current);
+      }
       // 设置相机模式
       scene.camera.setMode(cameraMode);
       // 渲染场景

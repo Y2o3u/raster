@@ -7,6 +7,7 @@ import Vec4 from '../math/vector/vec4';
 import { Node } from '../core/node';
 import { Mat4 } from '../math/matrix/mat4';
 import { RasterizerDepth } from '../rasterizer/rasterizer-depth';
+import { cross } from '../math/utils/util';
 
 /** 渲染器列表 */
 const RasterizerList = [RasterizerTriangle, RasterizerNormal, RasterizerDepth];
@@ -85,9 +86,9 @@ export class Pipeline {
       const p2 = position[indices[i * 3 + 2]];
 
       // 面剔除、超过一个三角形才触发
-      if (triangleCount > 1 && !this.isCCW(p0.clone(), p1.clone(), p2.clone())) {
-        continue;
-      }
+      // if (triangleCount > 1 && !this.isCCW(p0.clone(), p1.clone(), p2.clone())) {
+      //   continue;
+      // }
 
       // 光栅化
       rasterizer.run(
@@ -103,21 +104,48 @@ export class Pipeline {
   }
 
   /**
-   * 行列式, 计算三角形是顺时针还是逆时针, 用于背面剔除
+   * 判断三角形是否为逆时针顺序、简化版
    * @param p0
    * @param p1
    * @param p2
-   * @private
+   * @returns 是否为逆时针
    */
   private isCCW(p0: Vec4, p1: Vec4, p2: Vec4): boolean {
+    p1.standardized();
+    p2.standardized();
+    p0.standardized();
+
+    const edge1 = p1.sub(p0);
+    const edge2 = p2.sub(p0);
+    const normal = edge1.xyz.cross(edge2.xyz);
+    return normal.z < 0;
+  }
+
+  /**
+   * 考虑观察者位置的 判断三角形是否为逆时针顺序
+   * @param p0
+   * @param p1
+   * @param p2
+   * @returns 是否为逆时针
+   * @private
+   */
+  private isCCWConsideringObserver(p0: Vec4, p1: Vec4, p2: Vec4): boolean {
+    // 确保顶点在视图空间中
     p0.standardized();
     p1.standardized();
     p2.standardized();
-    const a = p1.x - p0.x;
-    const b = p1.y - p0.y;
-    const c = p2.x - p0.x;
-    const d = p2.y - p0.y;
-    return a * d - b * c < 0;
+
+    // 计算边向量
+    const edge1 = p1.sub(p0);
+    const edge2 = p2.sub(p0);
+    // 计算法向量
+    const normal = edge1.xyz.cross(edge2.xyz);
+    // 观察者方向（视图空间中观察者在原点）
+    const observerDirection = new Vec4(0, 0, -1, 0); // 假设观察者看向负z方向
+    // 计算法向量和观察者方向的点积
+    const dotProduct = normal.x * observerDirection.x + normal.y * observerDirection.y + normal.z * observerDirection.z;
+    // 如果点积小于0，说明法向量朝向观察者，即为逆时针
+    return dotProduct < 0;
   }
 
   /**
