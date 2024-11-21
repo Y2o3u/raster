@@ -103,6 +103,8 @@ export class RasterizerNormal extends Rasterizer {
             color.z /= samplePoints.length;
             color.w = 1;
 
+            // 设置顶点着色器输出
+            this.variable.color = color;
             // 走一遍片段着色器
             color = renderContext.fs.main(renderContext, this.variable);
             this.frameBuffer.setColor(x, y, color);
