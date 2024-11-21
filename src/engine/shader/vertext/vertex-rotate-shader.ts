@@ -19,12 +19,7 @@ export class VertexRotateShader {
     const coord = Vec4.fromArray([inputVAO.position[0], inputVAO.position[1], inputVAO.position[2], 1]);
     const time = context.time;
     // prettier-ignore
-    const rotationMat = Mat4.fromValues(
-        Math.cos(time), 0, -Math.sin(time), 0,
-        0, 1, 0, 0,
-        Math.sin(time), 0, Math.cos(time), 0,
-        0, 0, 0, 1
-    )
+    const rotationMat = Mat4.rotationY(time * 40);
     // 应用旋转矩阵
     let position = rotationMat.multiply(coord);
     // 转化为顶点数据
