@@ -60,28 +60,14 @@ export class RasterizerDepth extends Rasterizer {
 
         // 更新深度缓冲区
         this.zBuffer.setZ(x, y, z);
+        // 深度写入frameBuffer的RGB通道
+        this.frameBuffer.setColor(x, y, new Vec4(z, z, z, 1));
       }
     }
   }
 
-  /** 重写GetFrameBuffer、将深度值写入frameBuffer的RGB通道 */
-  getFrameBuffer(): Float32Array {
-    let frameBuffer = this.frameBuffer.getFrameBuffer();
-    for (let i = 0, len = this.zBuffer.getZBuffer().length; i < len; i++) {
-      // 将深度值映射到0-1之间
-      const v = (this.zBuffer.getZByIndex(i) + 1) * 0.5;
-      // 写入frameBuffer的RGB通道
-      frameBuffer[i * 4] = v;
-      frameBuffer[i * 4 + 1] = v;
-      frameBuffer[i * 4 + 2] = v;
-      // 写入frameBuffer的A通道
-      frameBuffer[i * 4 + 3] = 1;
-    }
-    return frameBuffer;
-  }
-
   clear() {
-    this.frameBuffer.setClearColor(new Vec4(1, 1, 1, 1));
+    // this.frameBuffer.setClearColor(new Vec4(1, 1, 1, 1));
     this.zBuffer.clear();
     this.frameBuffer.clear();
   }
