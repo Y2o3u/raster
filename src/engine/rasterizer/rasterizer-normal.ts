@@ -107,7 +107,7 @@ export class RasterizerNormal extends Rasterizer {
             this.variable.color = color;
             // 走一遍片段着色器
             color = renderContext.fs.main(renderContext, this.variable);
-            this.frameBuffer.setColor(x, y, color);
+            this.frameBuffer.setColor(x, y, this.variable.color);
           }
         }
       }
