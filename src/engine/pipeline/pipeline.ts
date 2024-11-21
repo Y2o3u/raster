@@ -19,6 +19,13 @@ export enum RasterizerMode {
   Depth,
 }
 
+/** 正面、背面、关闭剔除 */
+export enum FaceCulling {
+  Front,
+  Back,
+  Off,
+}
+
 /** 渲染管线 */
 export class Pipeline {
   /** 光栅化器 */
@@ -27,6 +34,8 @@ export class Pipeline {
   renderContext: RenderContext;
   /** 当前渲染模式 */
   renderMode: RasterizerMode = RasterizerMode.Normal;
+  /** 当前剔除模式 */
+  faceCulling: FaceCulling = FaceCulling.Front;
 
   /**
    * @param width 宽度
@@ -37,6 +46,7 @@ export class Pipeline {
     this.renderContext = new RenderContext();
     this.rasterizers = RasterizerList.map((rasterizer) => new rasterizer(width, height));
     this.renderMode = renderMode ?? RasterizerMode.Normal;
+    this.faceCulling = FaceCulling.Back;
   }
 
   /** 设置渲染模式 */
@@ -47,6 +57,11 @@ export class Pipeline {
   /** 设置是否开启MSAA抗锯齿 */
   setEnableMSAA(enable: boolean) {
     this.rasterizers.forEach((rasterizer) => rasterizer.setEnableMSAA(enable));
+  }
+
+  /** 设置面剔除 */
+  setFaceCulling(mode: FaceCulling) {
+    this.faceCulling = mode;
   }
 
   /**
@@ -86,8 +101,13 @@ export class Pipeline {
       const p2 = position[indices[i * 3 + 2]];
 
       // 面剔除、超过一个三角形才触发
-      if (triangleCount > 1 && !this.isCCW(p0.clone(), p1.clone(), p2.clone())) {
-        continue;
+      if (this.faceCulling !== FaceCulling.Off && triangleCount > 1) {
+        const isCCW = this.isCCW(p0.clone(), p1.clone(), p2.clone());
+        const shouldCull =
+          (this.faceCulling === FaceCulling.Back && !isCCW) || (this.faceCulling === FaceCulling.Front && isCCW);
+        if (shouldCull) {
+          continue;
+        }
       }
 
       // 光栅化
@@ -144,8 +164,8 @@ export class Pipeline {
     const observerDirection = new Vec4(0, 0, -1, 0); // 假设观察者看向负z方向
     // 计算法向量和观察者方向的点积
     const dotProduct = normal.x * observerDirection.x + normal.y * observerDirection.y + normal.z * observerDirection.z;
-    // 如果点积小于0，说明法向量朝向观察者，即为逆时针
-    return dotProduct < 0;
+    // 如果点积大于0，说明法向量朝向观察者，即为逆时针
+    return dotProduct > 0;
   }
 
   /**

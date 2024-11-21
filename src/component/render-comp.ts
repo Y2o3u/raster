@@ -1,7 +1,7 @@
 import { CameraMode } from '@/engine/core/camera';
 import { Scene } from '@/engine/core/scene';
 import scheduler from '@/engine/core/schedule';
-import { RasterizerMode, Pipeline } from '@/engine/pipeline/pipeline';
+import { RasterizerMode, Pipeline, FaceCulling } from '@/engine/pipeline/pipeline';
 import { WebCanvas } from '@/engine/platform/h5-canvas';
 import { useRef, useEffect } from 'react';
 import * as SceneList from '../examples';
@@ -18,10 +18,19 @@ interface RendererProps {
   cameraMode: CameraMode;
   /** 是否开启MSAA抗锯齿 */
   isMSAAEnabled: boolean;
+  /** 面剔除 */
+  faceCulling: FaceCulling;
 }
 
 /** 渲染器组件 */
-const Renderer: React.FC<RendererProps> = ({ resolution, sceneKey, renderMode, cameraMode, isMSAAEnabled }) => {
+const Renderer: React.FC<RendererProps> = ({
+  resolution,
+  sceneKey,
+  renderMode,
+  cameraMode,
+  isMSAAEnabled,
+  faceCulling,
+}) => {
   const animationFrameId = useRef<number | null>(null);
 
   useEffect(() => {
@@ -41,7 +50,7 @@ const Renderer: React.FC<RendererProps> = ({ resolution, sceneKey, renderMode, c
       render(scene);
     };
     loadScene();
-  }, [resolution, sceneKey, cameraMode, isMSAAEnabled, renderMode]);
+  }, [resolution, sceneKey, cameraMode, isMSAAEnabled, renderMode, faceCulling]);
 
   function render(scene: Scene) {
     // 创建渲染管线、及初始化
@@ -52,6 +61,8 @@ const Renderer: React.FC<RendererProps> = ({ resolution, sceneKey, renderMode, c
     pipeline.setEnableMSAA(isMSAAEnabled);
     // 设置渲染模式
     pipeline.setRenderMode(renderMode);
+    // 设置面剔除
+    pipeline.setFaceCulling(faceCulling);
 
     // 更新FPS
     const fpsUpdater = updateFPS();
@@ -119,6 +130,7 @@ const Renderer: React.FC<RendererProps> = ({ resolution, sceneKey, renderMode, c
     let lastUpdate = 0;
     return function () {
       const now = Date.now();
+      // 每100ms更新一次FPS
       if (now - lastUpdate >= 100) {
         document.getElementById('fps').innerText = `FPS: ${scheduler.getFPS()}`;
         lastUpdate = now;

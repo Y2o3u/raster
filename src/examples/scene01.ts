@@ -24,12 +24,13 @@ export class Scene01 extends Scene {
     const triangle = new Node();
     /** 设置顶点数据 */
     triangle.setVBO(Primitives.triangle(), 3, 0, 3, 0, 0);
-    // triangle.vs = new VertexRotateShader();
+
     const material = triangle.getMaterial();
+    material.setVertexShader(new VertexRotateShader());
     triangle.setMaterial(material);
 
     triangle.setPosition(new Vec3(0, 0, -0.1));
-    triangle.setRotation(new Vec3(0, 0, 30));
+    // triangle.setRotation(new Vec3(0, 0, 0));
     // 设置shader、通常在材质上
     this.addChild(triangle);
   }

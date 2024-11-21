@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './App.scss';
-import { RasterizerMode } from './engine/pipeline/pipeline';
+import { FaceCulling, RasterizerMode } from './engine/pipeline/pipeline';
 import Inspector from './component/inspector/inspector';
 import * as SceneList from './examples';
 import { CameraMode } from './engine/core/camera';
@@ -14,6 +14,7 @@ function App() {
   const [sceneKey, setSceneKey] = useState<string | null>(DefaultScene.name);
   const [renderMode, setRenderMode] = useState(RasterizerMode.Normal);
   const [cameraMode, setCameraMode] = useState(CameraMode.Perspective);
+  const [faceCulling, setFaceCulling] = useState(FaceCulling.Back);
   const [isMSAAEnabled, setMSAA] = useState(false);
 
   /** 分辨率变化 */
@@ -44,6 +45,11 @@ function App() {
     setRenderMode(mode);
   }
 
+  /** 面剔除变化 */
+  function handleFaceCullingChange(mode: FaceCulling): void {
+    setFaceCulling(mode);
+  }
+
   return (
     <>
       <div className='container'>
@@ -58,6 +64,7 @@ function App() {
             renderMode={renderMode}
             cameraMode={cameraMode}
             isMSAAEnabled={isMSAAEnabled}
+            faceCulling={faceCulling}
           />
         </div>
         <div className='sidebar'>
@@ -69,6 +76,7 @@ function App() {
             onRenderModeChange={handleRenderModeChange}
             onCameraModeChange={handleCameraModeChange}
             onEnableMSAAChange={handleEnableMSAA}
+            onFaceCullingChange={handleFaceCullingChange}
           />
         </div>
       </div>

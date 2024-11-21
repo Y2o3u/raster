@@ -4,7 +4,7 @@ import { Checkbox, Input, Select, Radio } from 'antd';
 import * as SceneList from '../../examples';
 import { RadioChangeEvent } from 'antd';
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
-import { RasterizerMode } from '@/engine/pipeline/pipeline';
+import { FaceCulling, RasterizerMode } from '@/engine/pipeline/pipeline';
 import { CameraMode } from '@/engine/core/camera';
 const { Option } = Select;
 /** 检查器组件的props */
@@ -23,6 +23,8 @@ interface InspectorProps {
   onCameraModeChange: (mode: CameraMode) => void;
   /** 是否开启MSAA抗锯齿 */
   onEnableMSAAChange: (enabled: boolean) => void;
+  /** 面剔除变化 */
+  onFaceCullingChange: (mode: FaceCulling) => void;
 }
 
 /** 检查器组件 */
@@ -34,6 +36,7 @@ function Inspector({
   onRenderModeChange,
   onCameraModeChange,
   onEnableMSAAChange,
+  onFaceCullingChange,
 }: InspectorProps) {
   // 属性
   const [resolution, setResolution] = useState(initialResolution);
@@ -42,7 +45,7 @@ function Inspector({
   const [renderMode, setRenderMode] = useState(RasterizerMode.Normal);
   const [cameraMode, setCameraMode] = useState(CameraMode.Perspective);
   const [isMSAAEnabled, setMSAA] = useState(false);
-
+  const [faceCulling, setFaceCulling] = useState(FaceCulling.Back);
   /** 宽度变化 */
   const handleWidthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setResolution({ ...resolution, x: parseInt(e.target.value, 10) || 0 });
@@ -86,6 +89,12 @@ function Inspector({
     onEnableMSAAChange(e.target.checked);
   };
 
+  /** 面剔除变化 */
+  const handleFaceCullingChange = (value: FaceCulling) => {
+    setFaceCulling(value);
+    onFaceCullingChange(value);
+  };
+
   return (
     <div className='Inspector'>
       <div className='resolution'>
@@ -125,6 +134,17 @@ function Inspector({
           <Select defaultValue={CameraMode.Perspective} className='select' onChange={handleCameraModeChange}>
             <Option value={CameraMode.Perspective}>透视</Option>
             <Option value={CameraMode.Orthographic}>正交</Option>
+          </Select>
+        </div>
+      </div>
+
+      <div className='render-mode'>
+        <div className='flex-center'>
+          <label className='label'>面剔除:</label>
+          <Select defaultValue={faceCulling} className='select' onChange={handleFaceCullingChange}>
+            <Option value={FaceCulling.Back}>背面</Option>
+            <Option value={FaceCulling.Front}>正面</Option>
+            <Option value={FaceCulling.Off}>关闭</Option>
           </Select>
         </div>
       </div>
