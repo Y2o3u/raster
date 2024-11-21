@@ -12,7 +12,7 @@ export class FragmentTextureShader implements FragmentShader {
    * @returns 颜色
    */
   main(renderContext: RenderContext, input: Vertex): Vec4 {
-    const texture = renderContext.textures[0];
+    const texture = renderContext.getTexture(0);
     if (!texture) {
       return new Vec4(1, 1, 1, 1);
     }

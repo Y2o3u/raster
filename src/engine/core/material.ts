@@ -1,5 +1,5 @@
 import { FragmentShader } from '../shader/fragment/fragment-shader';
-import { VertexShader } from '../shader/vertext/vertex-shader';
+import { VertexShader } from '../shader/vertex/vertex-shader';
 import { Texture } from './data/texture';
 
 /**

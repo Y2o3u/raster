@@ -6,8 +6,9 @@ import { Scene } from '@/engine/core/scene';
 import { Loader } from '@/engine/math/utils/file-loader';
 import { ObjParse } from '@/engine/math/utils/obj-parser';
 import { Vec3 } from '@/engine/math/vector/vec3';
+import { FragmentShader } from '@/engine/shader/fragment/fragment-shader';
 import { FragmentTextureShader } from '@/engine/shader/fragment/fragment-texture-shader';
-import { VertexRotateShader } from '@/engine/shader/vertext/vertex-rotate-shader';
+import { VertexRotateShader } from '@/engine/shader/vertex/vertex-rotate-shader';
 import { Obj, Png } from '@/resources/resources';
 
 /** 场景04、模型渲染 */
@@ -31,9 +32,10 @@ export class Scene04 extends Scene {
     // 创建节点
     const spot = new Node();
     spot.setVBO(vertex, 3, 2, 3, 3, 0);
-    spot.setRotation(new Vec3(30, 0, 0));
+    spot.setRotation(new Vec3(30, 50, 0));
 
     // 创建一个新的材质
+    // const material = new Material(new VertexRotateShader(), new FragmentShader());
     const material = new Material(new VertexRotateShader(), new FragmentTextureShader());
     spot.setMaterial(material);
 

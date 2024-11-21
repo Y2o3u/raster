@@ -2,7 +2,7 @@ import { Mat4 } from '../math/matrix/mat4';
 import { VAO2VBO } from '../math/utils/util';
 import { Vec3 } from '../math/vector/vec3';
 import { FragmentShader } from '../shader/fragment/fragment-shader';
-import { VertexShader } from '../shader/vertext/vertex-shader';
+import { VertexShader } from '../shader/vertex/vertex-shader';
 import { Texture } from './data/texture';
 import { VAO } from './data/vao';
 import { VBO } from './data/vbo';
@@ -106,13 +106,6 @@ export class Node {
   setRotation(rotation: Vec3): void {
     if (rotation.equals(this.rotation)) return;
     this.rotation = rotation;
-    this.updateWorldMatrix();
-  }
-
-  /** 设置旋转 */
-  setRotationAxis(axis: RotationAxis, value: number): void {
-    if (this.rotation[axis] === value) return;
-    this.rotation[axis] = value;
     this.updateWorldMatrix();
   }
 

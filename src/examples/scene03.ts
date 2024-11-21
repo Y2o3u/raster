@@ -7,7 +7,7 @@ import { Primitives } from '@/engine/geometry/primitives';
 import { Loader } from '@/engine/math/utils/file-loader';
 import { Vec3 } from '@/engine/math/vector/vec3';
 import { FragmentTextureShader } from '@/engine/shader/fragment/fragment-texture-shader';
-import { VertexRotateShader } from '@/engine/shader/vertext/vertex-rotate-shader';
+import { VertexRotateShader } from '@/engine/shader/vertex/vertex-rotate-shader';
 import { Png } from '@/resources/resources';
 
 /** 场景03、纹理渲染 */

@@ -4,7 +4,7 @@ import { Node } from '@/engine/core/node';
 import { Scene } from '@/engine/core/scene';
 import { Primitives } from '@/engine/geometry/primitives';
 import { Vec3 } from '@/engine/math/vector/vec3';
-import { VertexRotateShader } from '@/engine/shader/vertext/vertex-rotate-shader';
+import { VertexRotateShader } from '@/engine/shader/vertex/vertex-rotate-shader';
 
 /** 渲染三角形 */
 export class Scene01 extends Scene {

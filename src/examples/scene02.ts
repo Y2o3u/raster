@@ -5,7 +5,7 @@ import { Scene } from '@/engine/core/scene';
 import { Primitives } from '@/engine/geometry/primitives';
 import { Vec3 } from '@/engine/math/vector/vec3';
 import { FragmentTextureShader } from '@/engine/shader/fragment/fragment-texture-shader';
-import { VertexRotateShader } from '@/engine/shader/vertext/vertex-rotate-shader';
+import { VertexRotateShader } from '@/engine/shader/vertex/vertex-rotate-shader';
 
 /** 场景二、立方体 */
 export class Scene02 extends Scene {
@@ -23,7 +23,7 @@ export class Scene02 extends Scene {
     // 立方体
     const cube = new Node();
     cube.setVBO(Primitives.cube(), 3, 0, 3, 0, 0);
-    cube.setRotationAxis(RotationAxis.X, 30);
+    cube.setRotation(new Vec3(30, 0, 0));
 
     // 创建一个新的材质
     const material = new Material(new VertexRotateShader());

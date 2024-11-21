@@ -5,9 +5,8 @@ import { RasterizerTriangle } from '../rasterizer/rasterizer-triangle';
 import { Vertex } from '../core/data/vertex';
 import Vec4 from '../math/vector/vec4';
 import { Node } from '../core/node';
-import { Mat4 } from '../math/matrix/mat4';
 import { RasterizerDepth } from '../rasterizer/rasterizer-depth';
-import { cross } from '../math/utils/util';
+import { getBaryCentricCoord } from '../math/utils/util';
 
 /** 渲染器列表 */
 const RasterizerList = [RasterizerTriangle, RasterizerNormal, RasterizerDepth];
