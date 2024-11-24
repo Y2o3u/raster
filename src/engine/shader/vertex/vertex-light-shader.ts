@@ -25,13 +25,13 @@ export default class VertexLightShader extends VertexShader {
 
     // 旋转
     const matRotate = Mat4.rotationY(context.time * 40);
-    coord = matRotate.multiply(coord);
+    coord = matRotate.mul(coord);
 
     // 旋转法线
     let normal = matRotate
-      .multiply(Vec4.fromArray([inputVAO.normal[0], inputVAO.normal[1], inputVAO.normal[2], 0]))
+      .mul(Vec4.fromArray([inputVAO.normal[0], inputVAO.normal[1], inputVAO.normal[2], 0]))
       .xyz.normalize();
-    
+
     // 如果存在纹理、采样纹理颜色
     let color = new Vec4(inputVAO.color[0], inputVAO.color[1], inputVAO.color[2], 1);
     if (context.getTexture(0)) {
@@ -40,7 +40,7 @@ export default class VertexLightShader extends VertexShader {
 
     // 漫反射 公式： Ld = Kd * I * max(cos(α), 0)
     const diffuse = Math.max(normal.dot(lightDir), 0);
-    color = color.multiply(diffuse);
+    color = color.mul(diffuse);
 
     // 环境光 公式： La = Ka * I
     const ambientStrength = 0.1;
@@ -53,7 +53,7 @@ export default class VertexLightShader extends VertexShader {
     const specular = Math.pow(Math.max(cosBeta, 0), 200);
     const Ks = 1;
     const specularColor = new Vec4(1, 1, 1, 0);
-    color.add(specularColor.multiply(Ks).multiply(specular), color);
+    color.add(specularColor.mul(Ks).mul(specular), color);
 
     vertexOut.color = color;
     vertexOut.normal = normal;
@@ -61,7 +61,7 @@ export default class VertexLightShader extends VertexShader {
     vertexOut.uv = new Vec2(inputVAO.uv[0], inputVAO.uv[1]);
 
     //计算经过MVP变换后的坐标
-    const position = context.matMVP.multiply(coord);
+    const position = context.matMVP.mul(coord);
     return position;
   }
 }

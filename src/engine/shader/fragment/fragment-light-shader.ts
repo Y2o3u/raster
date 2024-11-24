@@ -26,7 +26,7 @@ export class FragmentLightShader extends FragmentShader {
     // 光源方向与物体表面法线的夹角余弦值
     const cosAlpha = normal.dot(lightDir);
     const diffuse = Math.max(cosAlpha, 0);
-    const color = input.color.multiply(1 / (r * r)).multiply(diffuse);
+    const color = input.color.mul(1 / (r * r)).mul(diffuse);
 
     // 环境光 公式： La = Ka * I
     const ambient = new Vec4(ambientStrength, ambientStrength, ambientStrength, 1);
@@ -43,9 +43,9 @@ export class FragmentLightShader extends FragmentShader {
     const specularColor = new Vec4(1, 1, 1, 0);
     color.add(
       specularColor
-        .multiply(Ks)
-        .multiply(1 / (r * r))
-        .multiply(specular),
+        .mul(Ks)
+        .mul(1 / (r * r))
+        .mul(specular),
       color
     );
 

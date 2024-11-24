@@ -156,7 +156,7 @@ export class Camera {
       0, 0, 1, -this.position.z,
       0, 0, 0, 1
 );
-    this._matView = matMove.multiply(matAngle);
+    this._matView = matMove.mul(matAngle);
   }
 
   /**
@@ -204,7 +204,7 @@ export class Camera {
 
     // 透视投影矩阵 = 正交矩阵 * 透视->正交矩阵 （从右到左）
     const matOrtho = this.calcMatOrthographic();
-    this._matPerspective = matOrtho.multiply(matPerspectiveOrth);
+    this._matPerspective = matOrtho.mul(matPerspectiveOrth);
     return this._matPerspective;
   }
 

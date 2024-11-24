@@ -96,9 +96,9 @@ export class Mat3 {
    * @param vector 3D 向量
    * @returns 乘法运算结果
    */
-  public multiply(other: Mat3): Mat3;
-  public multiply(vector: Vec3): Vec3;
-  public multiply(value: Mat3 | Vec3): Mat3 | Vec3 {
+  public mul(other: Mat3): Mat3;
+  public mul(vector: Vec3): Vec3;
+  public mul(value: Mat3 | Vec3): Mat3 | Vec3 {
     if (value instanceof Vec3) {
       const result = new Vec3();
       const e = this.elements;

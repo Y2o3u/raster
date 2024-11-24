@@ -87,7 +87,7 @@ export class Pipeline {
       vertexs[i] = new Vertex();
       const outPosition = renderContext.vs.main(renderContext, vbo.getVertexVAO(i), vertexs[i]);
       // 将顶点坐标转换到屏幕坐标
-      position[i] = renderContext.matViewport.multiply(outPosition);
+      position[i] = renderContext.matViewport.mul(outPosition);
     }
 
     // 使用当前模式下的光栅化器、遍历三角形、得到像素数据

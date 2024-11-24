@@ -18,7 +18,7 @@ export class VertexShader {
     // 齐次坐标
     const coord = Vec4.fromArray([inputVAO.position[0], inputVAO.position[1], inputVAO.position[2], 1]);
     // 应用节点的世界坐标变换矩阵、计算出世界坐标、uv等
-    vertexOut.position = context.matWorld.multiply(coord).xyz;
+    vertexOut.position = context.matWorld.mul(coord).xyz;
     vertexOut.normal = Vec3.fromArray([inputVAO.normal[0], inputVAO.normal[1], inputVAO.normal[2]]);
     vertexOut.uv = Vec2.fromArray([inputVAO.uv[0], inputVAO.uv[1]]);
     vertexOut.color = Vec4.fromArray([inputVAO.color[0], inputVAO.color[1], inputVAO.color[2], 1]);
@@ -29,7 +29,7 @@ export class VertexShader {
     }
 
     //计算经过MVP变换后的坐标
-    const position = context.matMVP.multiply(coord);
+    const position = context.matMVP.mul(coord);
     return position;
   }
 }

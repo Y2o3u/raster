@@ -114,7 +114,7 @@ const Renderer: React.FC<RendererProps> = ({
       renderContext.matWorld = node.matWorld;
       renderContext.matWorldIT = node.matWorldIT;
       // 计算MVP矩阵
-      renderContext.matMVP = renderContext.matProjection.multiply(renderContext.matView).multiply(node.matWorld);
+      renderContext.matMVP = renderContext.matProjection.mul(renderContext.matView).mul(node.matWorld);
       // 节点材质数据
       const material = node.getMaterial();
       renderContext.vs = material.getVertexShader();

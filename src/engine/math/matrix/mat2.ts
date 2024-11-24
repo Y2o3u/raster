@@ -63,9 +63,9 @@ export class Mat2 {
    * @param vector 2D 向量
    * @returns 乘法运算结果
    */
-  public multiply(other: Mat2): Mat2;
-  public multiply(vector: Vec2): Vec2;
-  public multiply(value: Mat2 | Vec2): Mat2 | Vec2 {
+  public mul(other: Mat2): Mat2;
+  public mul(vector: Vec2): Vec2;
+  public mul(value: Mat2 | Vec2): Mat2 | Vec2 {
     if (value instanceof Vec2) {
       // 矩阵与向量相乘
       const result = new Vec2();

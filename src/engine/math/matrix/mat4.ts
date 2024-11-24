@@ -114,9 +114,9 @@ export class Mat4 {
    * @param vector 4D 向量
    * @returns 乘法运算结果
    */
-  public multiply(other: Mat4): Mat4;
-  public multiply(vector: Vec4): Vec4;
-  public multiply(value: Mat4 | Vec4): Mat4 | Vec4 {
+  public mul(other: Mat4): Mat4;
+  public mul(vector: Vec4): Vec4;
+  public mul(value: Mat4 | Vec4): Mat4 | Vec4 {
     if (value instanceof Vec4) {
       const result = new Vec4();
       const e = this.elements;

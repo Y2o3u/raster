@@ -79,7 +79,7 @@ export default class Vec4 {
    * @param scale - 缩放因子
    * @param out - 输出向量
    */
-  multiply(scale: number | Vec4, out?: Vec4) {
+  mul(scale: number | Vec4, out?: Vec4) {
     let newVec4 = out ?? new Vec4();
     if (scale instanceof Vec4) {
       newVec4.x = this.x * scale.x;

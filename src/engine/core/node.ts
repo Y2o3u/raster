@@ -87,12 +87,12 @@ export class Node {
     const matRotateX = Mat4.rotationX(this.rotation.x);
     const matRotateY = Mat4.rotationY(this.rotation.y);
     const matRotateZ = Mat4.rotationZ(this.rotation.z);
-    const matRotate = matRotateX.multiply(matRotateY).multiply(matRotateZ);
+    const matRotate = matRotateX.mul(matRotateY).mul(matRotateZ);
     // 旋转矩阵的逆、等于旋转矩阵的转置
     const matRotateIT = matRotate.transpose();
 
-    this.matWorld = matMove.multiply(matRotate).multiply(matScale);
-    this.matWorldIT = matScaleIT.multiply(matRotateIT).multiply(matMoveIT);
+    this.matWorld = matMove.mul(matRotate).mul(matScale);
+    this.matWorldIT = matScaleIT.mul(matRotateIT).mul(matMoveIT);
   }
 
   /** 设置位置 */
