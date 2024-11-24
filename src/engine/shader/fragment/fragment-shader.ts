@@ -11,6 +11,14 @@ export class FragmentShader {
    * @returns 颜色
    */
   main(context: RenderContext, input: Vertex): Vec4 {
-    return input.color;
+    // 默认颜色
+    let color = input.color || new Vec4(1, 1, 1, 1);
+    // 存在纹理、则进行纹理采样
+    const texture = context.getTexture(0);
+    if (texture) {
+      // 纹理采样
+      color = texture.getColorByUV(input.uv.x, input.uv.y);
+    }
+    return color;
   }
 }

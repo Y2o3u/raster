@@ -75,14 +75,24 @@ export default class Vec4 {
   }
 
   /**
-   * 向量缩放
+   * 向量乘法
    * @param scale - 缩放因子
+   * @param out - 输出向量
    */
-  scale(scale: number) {
-    this.x *= scale;
-    this.y *= scale;
-    this.z *= scale;
-    this.w *= scale;
+  multiply(scale: number | Vec4, out?: Vec4) {
+    let newVec4 = out ?? new Vec4();
+    if (scale instanceof Vec4) {
+      newVec4.x = this.x * scale.x;
+      newVec4.y = this.y * scale.y;
+      newVec4.z = this.z * scale.z;
+      newVec4.w = this.w * scale.w;
+    } else {
+      newVec4.x = this.x * scale;
+      newVec4.y = this.y * scale;
+      newVec4.z = this.z * scale;
+      newVec4.w = this.w * scale;
+    }
+    return newVec4;
   }
 
   /**

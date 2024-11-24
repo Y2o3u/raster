@@ -27,7 +27,7 @@ export class Rasterizer {
   public superSampleZBuffer: ZBuffer;
 
   /** 是否开启MSAA抗锯齿 */
-  protected isEnableMSAA: boolean = false;
+  protected isEnableMSAA: boolean = true;
   /** 子像素数量 */
   protected samples: number = 4;
 

@@ -11,6 +11,8 @@ export class Scene {
   /** 子节点 */
   children: Node[];
 
+  /** 是否展示MSAA开关 */
+  static isShowMSAA = false;
   constructor(width: number, height: number) {
     this.children = [];
     this.sphereLight = new SphereLight();

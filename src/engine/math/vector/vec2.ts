@@ -138,7 +138,7 @@ export class Vec2 {
    * @returns 当前向量实例
    */
   public normalize(): this {
-    const len = Math.hypot(this.x, this.y);
+    const len = this.length();
     if (len !== 0) {
       this.x /= len;
       this.y /= len;

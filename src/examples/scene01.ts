@@ -11,6 +11,9 @@ export class Scene01 extends Scene {
   /** 场景描述 */
   static introduce = '光栅化三角形';
 
+  /** 是否展示MSAA开关 */
+  static isShowMSAA = true;
+
   /** 初始化场景 */
   init(width: number, height: number) {
     this.camera = new Camera(width, height, -1, -100, 90);

@@ -38,6 +38,23 @@ export class FrameBufferX1 implements FrameBuffer {
   }
 
   /**
+   * 获取颜色
+   * @param x 像素x坐标
+   * @param y 像素y坐标
+   * @param index 子像素索引 (0-1)
+   */
+  getColor(x: number, y: number, index: number = 0): Vec4 {
+    let baseIndex = (x + y * this.width) * 4;
+    let offset = baseIndex + index * 4;
+    return new Vec4(
+      this.frameBuffer[offset],
+      this.frameBuffer[offset + 1],
+      this.frameBuffer[offset + 2],
+      this.frameBuffer[offset + 3]
+    );
+  }
+
+  /**
    * 设置清除颜色
    * @param color 颜色
    */

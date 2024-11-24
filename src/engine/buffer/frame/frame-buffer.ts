@@ -28,7 +28,7 @@ export interface FrameBuffer {
    * @param y 像素y坐标
    * @param index 子像素索引 (0-n)
    */
-  getColor?(x: number, y: number, index: number): Vec4;
+  getColor?(x: number, y: number, index?: number): Vec4;
 
   /**
    * 设置清除颜色

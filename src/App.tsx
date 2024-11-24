@@ -7,7 +7,7 @@ import { CameraMode } from './engine/core/camera';
 import Renderer from './component/render-comp';
 
 /** 默认场景 */
-const DefaultScene = SceneList.Scene02;
+const DefaultScene = SceneList.Scene05;
 
 function App() {
   const [resolution, setResolution] = useState({ x: 800, y: 600 });

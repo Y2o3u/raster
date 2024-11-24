@@ -219,10 +219,9 @@ export class Vec3 {
   normalize(): this {
     const len = this.length();
     if (len !== 0) {
-      const invLen = 1 / len;
-      this.x *= invLen;
-      this.y *= invLen;
-      this.z *= invLen;
+      this.x /= len;
+      this.y /= len;
+      this.z /= len;
     }
     return this;
   }

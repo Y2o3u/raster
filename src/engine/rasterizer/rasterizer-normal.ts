@@ -81,12 +81,6 @@ export class RasterizerNormal extends Rasterizer {
           // 重心坐标插值各种属性
           barycentricInterpolation(v0, v1, v2, alpha, beta, gamma, this.variable);
 
-          // 采样子像素插值的纹理颜色
-          const texture = renderContext.getTexture(0);
-          if (texture) {
-            texture.getColorByUV(this.variable.uv.x, this.variable.uv.y, this.variable.color);
-          }
-
           if (this.isEnableMSAA) {
             this.superSampleBuffer?.setColor(x, y, this.variable.color, i);
           }

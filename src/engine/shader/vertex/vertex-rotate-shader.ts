@@ -22,9 +22,15 @@ export class VertexRotateShader {
     const rotationMat = Mat4.rotationY(time * 40);
     // 应用旋转矩阵
     let position = rotationMat.multiply(coord);
+
+    // 法线旋转
+    const normal = rotationMat.multiply(
+      Vec4.fromArray([inputVAO.normal[0], inputVAO.normal[1], inputVAO.normal[2], 0])
+    );
+
     // 转化为顶点数据
     vertexOut.position = context.matWorld.multiply(position).xyz;
-    vertexOut.normal = Vec3.fromArray([inputVAO.normal[0], inputVAO.normal[1], inputVAO.normal[2]]);
+    vertexOut.normal = Vec3.fromArray([normal.x, normal.y, normal.z]);
     vertexOut.uv = Vec2.fromArray([inputVAO.uv[0], inputVAO.uv[1]]);
     vertexOut.color = Vec4.fromArray([inputVAO.color[0], inputVAO.color[1], inputVAO.color[2], 1]);
 

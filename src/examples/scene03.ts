@@ -34,7 +34,7 @@ export class Scene03 extends Scene {
     const spot = await Loader.loadImg(Png.Box);
 
     // 创建一个新的材质
-    const material = new Material(new VertexRotateShader(), new FragmentTextureShader());
+    const material = new Material(new VertexRotateShader());
     const texture = new Texture(spot);
     material.setTexture(texture);
     cube.setMaterial(material);

@@ -4,13 +4,15 @@ import { Node, RotationAxis } from '@/engine/core/node';
 import { Scene } from '@/engine/core/scene';
 import { Primitives } from '@/engine/geometry/primitives';
 import { Vec3 } from '@/engine/math/vector/vec3';
-import { FragmentTextureShader } from '@/engine/shader/fragment/fragment-texture-shader';
 import { VertexRotateShader } from '@/engine/shader/vertex/vertex-rotate-shader';
 
 /** 场景二、立方体 */
 export class Scene02 extends Scene {
   /** 场景描述 */
   static introduce = '立方体（背面剔除）';
+
+  /** 是否展示MSAA开关 */
+  static isShowMSAA = true;
 
   init(width: number, height: number) {
     // 初始化场景

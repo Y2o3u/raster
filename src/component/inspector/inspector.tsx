@@ -149,13 +149,15 @@ function Inspector({
         </div>
       </div>
 
-      <div className='msaa'>
-        <div className='flex-center'>
-          <label className='label'>抗锯齿(MSAA)</label>
-          <Checkbox onChange={handleMSAAChange} />
-          <label className='label'>（仅支持常规光栅）</label>
+      {SceneList[selectedScene].isShowMSAA && (
+        <div className='msaa'>
+          <div className='flex-center'>
+            <label className='label'>抗锯齿(MSAA)</label>
+            <Checkbox onChange={handleMSAAChange} />
+            <label className='label'>（仅支持常规光栅）</label>
+          </div>
         </div>
-      </div>
+      )}
 
       <div className='scene-list'>
         <label className='scene-label'>场景列表:</label>

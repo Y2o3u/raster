@@ -23,6 +23,7 @@ export class VertexShader {
     vertexOut.uv = Vec2.fromArray([inputVAO.uv[0], inputVAO.uv[1]]);
     vertexOut.color = Vec4.fromArray([inputVAO.color[0], inputVAO.color[1], inputVAO.color[2], 1]);
 
+    // 如果存在纹理、采样纹理颜色
     if (context.getTexture(0)) {
       vertexOut.color = context.getTexture(0).getColorByUV(vertexOut.uv.x, vertexOut.uv.y, vertexOut.color);
     }

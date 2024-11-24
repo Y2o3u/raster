@@ -88,4 +88,59 @@ export class Primitives {
       indices: [0, 1, 2, 2, 3, 0],
     };
   }
+
+  /*** 球体 */
+  public static sphere(): VAO {
+    const latitudeBands = 16;
+    const longitudeBands = 16;
+    const radius = 0.5;
+
+    const position = [];
+    const normal = [];
+    const uv = [];
+    const indices = [];
+    const color = [];
+
+    for (let latNumber = 0; latNumber <= latitudeBands; latNumber++) {
+      const theta = (latNumber * Math.PI) / latitudeBands;
+      const sinTheta = Math.sin(theta);
+      const cosTheta = Math.cos(theta);
+
+      for (let longNumber = 0; longNumber <= longitudeBands; longNumber++) {
+        const phi = (longNumber * 2 * Math.PI) / longitudeBands;
+        const sinPhi = Math.sin(phi);
+        const cosPhi = Math.cos(phi);
+
+        const x = cosPhi * sinTheta;
+        const y = cosTheta;
+        const z = sinPhi * sinTheta;
+        const u = 1 - longNumber / longitudeBands;
+        const v = 1 - latNumber / latitudeBands;
+
+        normal.push(x, y, z);
+        uv.push(u, v);
+        position.push(radius * x, radius * y, radius * z);
+        color.push(1, 1, 1);
+      }
+    }
+
+    for (let latNumber = 0; latNumber < latitudeBands; latNumber++) {
+      for (let longNumber = 0; longNumber < longitudeBands; longNumber++) {
+        const first = latNumber * (longitudeBands + 1) + longNumber;
+        const second = first + longitudeBands + 1;
+
+        indices.push(first, first + 1, second);
+        indices.push(second, first + 1, second + 1);
+      }
+    }
+
+    return {
+      position,
+      color,
+      normal,
+      uv,
+      tangent: [],
+      indices,
+    };
+  }
 }
