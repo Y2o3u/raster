@@ -44,8 +44,8 @@ export default class VertexLightShader extends VertexShader {
 
     // 环境光 公式： La = Ka * I
     const ambientStrength = 0.1;
-    const ambient = new Vec4(ambientStrength, ambientStrength, ambientStrength, 1);
-    color.add(ambient, color);
+    const Ka = new Vec4(ambientStrength, ambientStrength, ambientStrength, 1);
+    color.add(Ka, color);
 
     // 高光项 公式： Ls = Ks * I * max(cos(β), 0)^n
     const halfVec = lightDir.add(context.cameraPos.sub(coord.xyz)).normalize();
