@@ -4,6 +4,7 @@ import { Material } from '@/engine/core/material';
 import { Node } from '@/engine/core/node';
 import { PointLight } from '@/engine/core/point-light';
 import { Scene } from '@/engine/core/scene';
+import { Primitives } from '@/engine/geometry/primitives';
 import { Loader } from '@/engine/math/utils/file-loader';
 import { ObjParse } from '@/engine/math/utils/obj-parser';
 import { Vec3 } from '@/engine/math/vector/vec3';
@@ -16,8 +17,8 @@ import { VertexShader } from '@/engine/shader/vertex/vertex-shader';
 import { Obj, Png } from '@/resources/resources';
 
 /** 场景05、光照模型 */
-export class Scene05 extends Scene {
-  static introduce = '光照模型 (Blinn-Phong)';
+export class Scene06 extends Scene {
+  static introduce = '球体';
 
   /**
    * 初始化场景
@@ -28,28 +29,39 @@ export class Scene05 extends Scene {
     this.camera = new Camera(width, height, -1, -100, 90);
     this.camera.setMode(CameraMode.Perspective);
 
-    this.camera.setPosition(0, 0, 2);
+    this.camera.setPosition(0, 0, 4);
     this.camera.lookAt(new Vec3(0, 0, 0));
+
+    // 加载球体模型
+    const sphereObj = await Loader.loadText(Obj.Sphere);
+    const sphereVertex = ObjParse.convertToVAO(sphereObj);
 
     // 创建一个点光源
     this.pointLight = new PointLight();
-    this.pointLight.setPosition(new Vec3(0, 2, 2));
+    // this.pointLight.setPosition(new Vec3(3, 1.5, 1));
+    this.pointLight.setPosition(new Vec3(2, 2, 1));
+    this.pointLight.setScale(0.1);
     this.pointLight.color = new Vec4(1, 1, 1, 1);
+    this.pointLight.setVBO(sphereVertex, 3, 2, 0, 3, 0);
+    this.addChild(this.pointLight);
 
-    // 加载奶牛模型
-    const spotObj = await Loader.loadText(Obj.Spot);
-    const vertex = ObjParse.convertToVAO(spotObj);
-    const texture = await Loader.loadImg(Png.Spot);
-
-    // 创建节点
-    const spot = new Node();
-    spot.setVBO(vertex, 3, 2, 3, 3, 0);
-    spot.setRotation(new Vec3(30, 50, 0));
-
+    // 创建球体
+    const sphere = new Node();
+    sphere.setVBO(sphereVertex, 3, 2, 0, 3, 0);
+    sphere.setRotation(new Vec3(30, 0, 0));
     const material = new Material(new VertexRotateShader(), new FragmentLightShader());
-    // const material = new Material(new VertexLightShader(), new FragmentShader());
-    spot.setMaterial(material);
-    material.setTexture(new Texture(texture));
-    this.addChild(spot);
+    sphere.setMaterial(material);
+    this.addChild(sphere);
+
+    // 创建地板
+    const floor = new Node();
+    const floorObj = await Loader.loadText(Obj.Plane);
+    const floorVertex = ObjParse.convertToVAO(floorObj);
+    floor.setVBO(floorVertex, 3, 2, 3, 3, 0);
+    floor.setPosition(new Vec3(0, -1.5, 0));
+    floor.setScale(new Vec3(3, 33, 3));
+    const material1 = new Material(new VertexShader(), new FragmentLightShader());
+    floor.setMaterial(material1);
+    this.addChild(floor);
   }
 }

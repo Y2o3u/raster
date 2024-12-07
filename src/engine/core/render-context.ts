@@ -25,10 +25,10 @@ export class RenderContext {
   /** 摄像机世界坐标 */
   cameraPos: Vec3;
 
-  /** 球光位置 */
-  sphereLightPos: Vec3;
-  /** 球光颜色 */
-  sphereLightColor: Vec4;
+  /** 点光源位置 */
+  pointLightPos: Vec3;
+  /** 点光源颜色 */
+  pointLightColor: Vec4;
 
   /**
    * xy：屏幕尺寸

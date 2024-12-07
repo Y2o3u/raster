@@ -1,13 +1,13 @@
 import { Camera } from './camera';
 import { Node } from './node';
-import { SphereLight } from './sphere-light';
+import { PointLight } from './point-light';
 
 /** 场景 */
 export class Scene {
   /** 相机 */
   camera: Camera;
-  /** 球形光源 */
-  sphereLight: SphereLight;
+  /** 点光源 */
+  pointLight: PointLight;
   /** 子节点 */
   children: Node[];
 
@@ -15,7 +15,7 @@ export class Scene {
   static isShowMSAA = false;
   constructor(width: number, height: number) {
     this.children = [];
-    this.sphereLight = new SphereLight();
+    this.pointLight = new PointLight();
     this.camera = new Camera(width, height, -0.1, -100, 90);
     this.init(width, height);
   }
@@ -47,8 +47,8 @@ export class Scene {
   }
 
   /** 获取球形光源 */
-  getSphereLight() {
-    return this.sphereLight;
+  getPointLight() {
+    return this.pointLight;
   }
 
   /** 清空场景 */

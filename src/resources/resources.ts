@@ -6,6 +6,11 @@ import box from '../resources/texture/container_diffuse.png';
 const spotObjPath = new URL('../resources/model/spot/spot_triangulated_good.obj', import.meta.url).pathname;
 /** 非洲人头像 */
 const africanHeadObjPath = new URL('../resources/model/african/african_head.obj', import.meta.url).pathname;
+/** 球体 */
+const sphereObjPath = new URL('../resources/model/sphere/sphere.obj', import.meta.url).pathname;
+/** 地板 */
+const planeObjPath = new URL('../resources/model/plane/plane.obj', import.meta.url).pathname;
+
 /**
  * 纹理图片资源
  */
@@ -26,4 +31,8 @@ export const Obj = {
   Spot: spotObjPath,
   /** 非洲人头像 */
   AfricanHead: africanHeadObjPath,
+  /** 球体 */
+  Sphere: sphereObjPath,
+  /** 地板 */
+  Plane: planeObjPath,
 };

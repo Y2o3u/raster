@@ -1,3 +1,4 @@
+import Vec4 from '../math/vector/vec4';
 import { FragmentShader } from '../shader/fragment/fragment-shader';
 import { VertexShader } from '../shader/vertex/vertex-shader';
 import { Texture } from './data/texture';

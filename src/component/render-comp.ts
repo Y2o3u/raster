@@ -89,7 +89,7 @@ const Renderer: React.FC<RendererProps> = ({
   /** 渲染场景 */
   function renderScene(scene: Scene, pipeline: Pipeline) {
     const camera = scene.getCamera();
-    const sphereLight = scene.getSphereLight();
+    const pointLight = scene.getPointLight();
 
     // 设置渲染上下文、用于着色器
     const renderContext = pipeline.renderContext;
@@ -102,10 +102,10 @@ const Renderer: React.FC<RendererProps> = ({
     renderContext.time = scheduler.getTotalTime();
     // 相机位置
     renderContext.cameraPos = camera.getPosition().xyz;
-    // 球光位置、颜色
-    if (sphereLight) {
-      renderContext.sphereLightPos = sphereLight.position.xyz;
-      renderContext.sphereLightColor = sphereLight.color;
+    // 点光源位置、颜色
+    if (pointLight) {
+      renderContext.pointLightPos = pointLight.position;
+      renderContext.pointLightColor = pointLight.color;
     }
 
     // 遍历场景所有节点、填充FrameBuffer

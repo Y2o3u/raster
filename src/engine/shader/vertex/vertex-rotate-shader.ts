@@ -5,9 +5,10 @@ import { Mat4 } from '@/engine/math/matrix/mat4';
 import { Vec2 } from '@/engine/math/vector/vec2';
 import { Vec3 } from '@/engine/math/vector/vec3';
 import Vec4 from '@/engine/math/vector/vec4';
+import { VertexShader } from './vertex-shader';
 
 /** 顶点着色器 */
-export class VertexRotateShader {
+export class VertexRotateShader extends VertexShader {
   /**
    * 主函数
    * @param context - 渲染上下文、可以拿到各种矩阵、事件、纹理等、和游戏引擎类似了
@@ -22,15 +23,19 @@ export class VertexRotateShader {
     const rotationMat = Mat4.rotationY(time * 40);
     // 应用旋转矩阵
     let position = rotationMat.mul(coord);
-
     // 法线旋转
     const normal = rotationMat.mul(Vec4.fromArray([inputVAO.normal[0], inputVAO.normal[1], inputVAO.normal[2], 0]));
-
     // 转化为顶点数据
     vertexOut.position = context.matWorld.mul(position).xyz;
     vertexOut.normal = Vec3.fromArray([normal.x, normal.y, normal.z]);
+    vertexOut.normal = context.matWorld.mul(normal).xyz;
     vertexOut.uv = Vec2.fromArray([inputVAO.uv[0], inputVAO.uv[1]]);
     vertexOut.color = Vec4.fromArray([inputVAO.color[0], inputVAO.color[1], inputVAO.color[2], 1]);
+
+    // 如果不存在颜色、则使用默认颜色
+    if (isNaN(inputVAO.color[0])) {
+      vertexOut.color = Vec4.fromArray([this.defaultColor.x, this.defaultColor.y, this.defaultColor.z, 1]);
+    }
 
     if (context.getTexture(0)) {
       vertexOut.color = context.getTexture(0).getColorByUV(vertexOut.uv.x, vertexOut.uv.y, vertexOut.color);

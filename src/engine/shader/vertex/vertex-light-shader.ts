@@ -19,7 +19,7 @@ export default class VertexLightShader extends VertexShader {
    */
   main(context: RenderContext, inputVAO: VAO, vertexOut: Vertex): Vec4 {
     // 计算光照方向
-    const lightPos = context.sphereLightPos;
+    const lightPos = context.pointLightPos;
     let coord = new Vec4(inputVAO.position[0], inputVAO.position[1], inputVAO.position[2], 1);
     const lightDir = lightPos.sub(coord.xyz).normalize();
 
@@ -34,6 +34,12 @@ export default class VertexLightShader extends VertexShader {
 
     // 如果存在纹理、采样纹理颜色
     let color = new Vec4(inputVAO.color[0], inputVAO.color[1], inputVAO.color[2], 1);
+
+    // 如果不存在颜色、则使用默认颜色
+    if (isNaN(inputVAO.color[0])) {
+      vertexOut.color = Vec4.fromArray([this.defaultColor.x, this.defaultColor.y, this.defaultColor.z, 1]);
+    }
+
     if (context.getTexture(0)) {
       color = context.getTexture(0).getColorByUV(inputVAO.uv[0], inputVAO.uv[1], color);
     }

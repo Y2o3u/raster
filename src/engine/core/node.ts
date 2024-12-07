@@ -91,6 +91,7 @@ export class Node {
     // 旋转矩阵的逆、等于旋转矩阵的转置
     const matRotateIT = matRotate.transpose();
 
+    // 计算顺序从右到左
     this.matWorld = matMove.mul(matRotate).mul(matScale);
     this.matWorldIT = matScaleIT.mul(matRotateIT).mul(matMoveIT);
   }
@@ -115,9 +116,13 @@ export class Node {
   }
 
   /** 设置缩放 */
-  setScale(scale: Vec3): void {
-    if (scale.equals(this.scale)) return;
-    this.scale = scale;
+  setScale(scale: Vec3 | number): void {
+    if (scale instanceof Vec3) {
+      if (scale.equals(this.scale)) return;
+      this.scale = scale;
+    } else {
+      this.scale.set(scale, scale, scale);
+    }
     this.updateWorldMatrix();
   }
 
