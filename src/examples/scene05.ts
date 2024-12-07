@@ -8,11 +8,9 @@ import { Loader } from '@/engine/math/utils/file-loader';
 import { ObjParse } from '@/engine/math/utils/obj-parser';
 import { Vec3 } from '@/engine/math/vector/vec3';
 import Vec4 from '@/engine/math/vector/vec4';
-import { FragmentLightShader } from '@/engine/shader/fragment/fragment-light-shader';
-import { FragmentShader } from '@/engine/shader/fragment/fragment-shader';
-import VertexLightShader from '@/engine/shader/vertex/vertex-light-shader';
-import { VertexRotateShader } from '@/engine/shader/vertex/vertex-rotate-shader';
-import { VertexShader } from '@/engine/shader/vertex/vertex-shader';
+import { LightModelFragmentLevel } from '@/engine/shader/light-model-fragment-level';
+import { LightModelRotateFragmentLevel } from '@/engine/shader/light-model-rotate-fragment-level';
+import { LightModelVertexLevel } from '@/engine/shader/light-model-vertex-level';
 import { Obj, Png } from '@/resources/resources';
 
 /** 场景05、光照模型 */
@@ -46,8 +44,7 @@ export class Scene05 extends Scene {
     spot.setVBO(vertex, 3, 2, 3, 3, 0);
     spot.setRotation(new Vec3(30, 50, 0));
 
-    const material = new Material(new VertexRotateShader(), new FragmentLightShader());
-    // const material = new Material(new VertexLightShader(), new FragmentShader());
+    const material = new Material(new LightModelRotateFragmentLevel());
     spot.setMaterial(material);
     material.setTexture(new Texture(texture));
     this.addChild(spot);

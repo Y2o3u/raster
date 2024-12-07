@@ -1,20 +1,11 @@
 import { Mat4 } from '../math/matrix/mat4';
 import { VAO2VBO } from '../math/utils/util';
 import { Vec3 } from '../math/vector/vec3';
-import { FragmentShader } from '../shader/fragment/fragment-shader';
-import { VertexShader } from '../shader/vertex/vertex-shader';
+import { Shader } from '../shader/shader';
 import { Texture } from './data/texture';
 import { VAO } from './data/vao';
-import { VBO } from './data/vbo';
 import { Material } from './material';
 import { Mesh } from './mesh';
-
-/** 旋转轴枚举 */
-export enum RotationAxis {
-  X = 'x',
-  Y = 'y',
-  Z = 'z',
-}
 
 /** 节点 */
 export class Node {
@@ -42,7 +33,7 @@ export class Node {
 
     // 初始化网格和材质
     this.mesh = new Mesh(null, []);
-    this.material = new Material(new VertexShader(), new FragmentShader());
+    this.material = new Material(new Shader());
 
     // 初始化位置、缩放、旋转
     this.position = new Vec3(0, 0, 0);

@@ -1,10 +1,10 @@
 import { Camera, CameraMode } from '@/engine/core/camera';
 import { Material } from '@/engine/core/material';
-import { Node, RotationAxis } from '@/engine/core/node';
+import { Node } from '@/engine/core/node';
 import { Scene } from '@/engine/core/scene';
 import { Primitives } from '@/engine/geometry/primitives';
 import { Vec3 } from '@/engine/math/vector/vec3';
-import { VertexRotateShader } from '@/engine/shader/vertex/vertex-rotate-shader';
+import { RotateSelfShader } from '@/engine/shader/rotate-self-shader';
 
 /** 场景二、立方体 */
 export class Scene02 extends Scene {
@@ -28,7 +28,7 @@ export class Scene02 extends Scene {
     cube.setRotation(new Vec3(30, 0, 0));
 
     // 创建一个新的材质
-    const material = new Material(new VertexRotateShader());
+    const material = new Material(new RotateSelfShader());
     cube.setMaterial(material);
 
     this.addChild(cube);

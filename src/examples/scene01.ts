@@ -4,7 +4,7 @@ import { Node } from '@/engine/core/node';
 import { Scene } from '@/engine/core/scene';
 import { Primitives } from '@/engine/geometry/primitives';
 import { Vec3 } from '@/engine/math/vector/vec3';
-import { VertexRotateShader } from '@/engine/shader/vertex/vertex-rotate-shader';
+import { RotateSelfShader } from '@/engine/shader/rotate-self-shader';
 
 /** 渲染三角形 */
 export class Scene01 extends Scene {
@@ -29,7 +29,7 @@ export class Scene01 extends Scene {
     triangle.setVBO(Primitives.triangle(), 3, 0, 3, 0, 0);
 
     const material = triangle.getMaterial();
-    material.setVertexShader(new VertexRotateShader());
+    material.setShader(new RotateSelfShader());
     triangle.setMaterial(material);
 
     triangle.setPosition(new Vec3(0, 0, -0.1));

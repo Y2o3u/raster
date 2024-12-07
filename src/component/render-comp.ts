@@ -124,8 +124,7 @@ const Renderer: React.FC<RendererProps> = ({
       renderContext.matMVP = renderContext.matProjection.mul(renderContext.matView).mul(node.matWorld);
       // 节点材质数据
       const material = node.getMaterial();
-      renderContext.vs = material.getVertexShader();
-      renderContext.fs = material.getFragmentShader();
+      renderContext.shader = material.getShader();
       renderContext.textures[0] = material.getTexture();
       // 渲染节点
       pipeline.renderNode(node);

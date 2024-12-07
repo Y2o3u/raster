@@ -10,11 +10,9 @@ import { Loader } from '@/engine/math/utils/file-loader';
 import { ObjParse } from '@/engine/math/utils/obj-parser';
 import { Vec3 } from '@/engine/math/vector/vec3';
 import Vec4 from '@/engine/math/vector/vec4';
-import { FragmentLightShader } from '@/engine/shader/fragment/fragment-light-shader';
-import { FragmentShader } from '@/engine/shader/fragment/fragment-shader';
-import VertexLightShader from '@/engine/shader/vertex/vertex-light-shader';
-import { VertexRotateShader } from '@/engine/shader/vertex/vertex-rotate-shader';
-import { VertexShader } from '@/engine/shader/vertex/vertex-shader';
+import { LightModelFragmentLevel } from '@/engine/shader/light-model-fragment-level';
+import { LightModelVertexLevel } from '@/engine/shader/light-model-vertex-level';
+import { Shader } from '@/engine/shader/shader';
 import { Obj, Png } from '@/resources/resources';
 
 /** 场景05、光照模型 */
@@ -56,7 +54,7 @@ export class Scene06 extends Scene {
     const sphere = new Node();
     sphere.setVBO(sphereVertex, 3, 2, 0, 3, 0);
     sphere.setRotation(new Vec3(30, 0, 0));
-    const material = new Material(new VertexRotateShader(), new FragmentLightShader());
+    const material = new Material(new LightModelFragmentLevel());
     sphere.setMaterial(material);
     this.addChild(sphere);
 
@@ -67,7 +65,7 @@ export class Scene06 extends Scene {
     floor.setVBO(floorVertex, 3, 2, 3, 3, 0);
     floor.setPosition(new Vec3(0, -1.5, 0));
     floor.setScale(new Vec3(3, 33, 3));
-    const material1 = new Material(new VertexShader(), new FragmentLightShader());
+    const material1 = new Material(new LightModelFragmentLevel());
     floor.setMaterial(material1);
     this.addChild(floor);
   }

@@ -6,7 +6,7 @@ import { Scene } from '@/engine/core/scene';
 import { Loader } from '@/engine/math/utils/file-loader';
 import { ObjParse } from '@/engine/math/utils/obj-parser';
 import { Vec3 } from '@/engine/math/vector/vec3';
-import { VertexRotateShader } from '@/engine/shader/vertex/vertex-rotate-shader';
+import { RotateSelfShader } from '@/engine/shader/rotate-self-shader';
 import { Obj, Png } from '@/resources/resources';
 
 /** 场景04、模型渲染 */
@@ -32,7 +32,7 @@ export class Scene04 extends Scene {
     spot.setVBO(vertex, 3, 2, 3, 3, 0);
     spot.setRotation(new Vec3(30, 50, 0));
 
-    const material = new Material(new VertexRotateShader());
+    const material = new Material(new RotateSelfShader());
     spot.setMaterial(material);
 
     spot.setTexture(new Texture(texture));

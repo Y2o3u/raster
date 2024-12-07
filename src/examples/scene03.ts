@@ -1,13 +1,12 @@
 import { Camera, CameraMode } from '@/engine/core/camera';
 import { Texture } from '@/engine/core/data/texture';
 import { Material } from '@/engine/core/material';
-import { Node, RotationAxis } from '@/engine/core/node';
+import { Node } from '@/engine/core/node';
 import { Scene } from '@/engine/core/scene';
 import { Primitives } from '@/engine/geometry/primitives';
 import { Loader } from '@/engine/math/utils/file-loader';
 import { Vec3 } from '@/engine/math/vector/vec3';
-import { FragmentTextureShader } from '@/engine/shader/fragment/fragment-texture-shader';
-import { VertexRotateShader } from '@/engine/shader/vertex/vertex-rotate-shader';
+import { TextureApplyShader } from '@/engine/shader/texture-apply-shader';
 import { Png } from '@/resources/resources';
 
 /** 场景03、纹理渲染 */
@@ -34,7 +33,7 @@ export class Scene03 extends Scene {
     const spot = await Loader.loadImg(Png.Box);
 
     // 创建一个新的材质
-    const material = new Material(new VertexRotateShader());
+    const material = new Material(new TextureApplyShader());
     const texture = new Texture(spot);
     material.setTexture(texture);
     cube.setMaterial(material);

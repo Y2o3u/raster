@@ -92,7 +92,7 @@ export class RasterizerNormal extends Rasterizer {
         if (insideTriangle) {
           // 兼容没有开启MSAA
           if (!this.isEnableMSAA) {
-            color = renderContext.fs.main(renderContext, this.variable);
+            color = renderContext.shader.frag(renderContext, this.variable);
             this.frameBuffer.setColor(x, y, color);
           } else {
             for (let i = 0; i < samplePoints.length; i++) {
@@ -105,7 +105,7 @@ export class RasterizerNormal extends Rasterizer {
 
             this.variable.color = color;
             // 走一遍片段着色器
-            color = renderContext.fs.main(renderContext, this.variable);
+            color = renderContext.shader.frag(renderContext, this.variable);
             this.frameBuffer.setColor(x, y, this.variable.color);
           }
         }

@@ -85,7 +85,7 @@ export class Pipeline {
     // 过一遍顶点着色器、坐标转换
     for (let i = 0; i < vertexCount; i++) {
       vertexs[i] = new Vertex();
-      const outPosition = renderContext.vs.main(renderContext, vbo.getVertexVAO(i), vertexs[i]);
+      const outPosition = renderContext.shader.vert(renderContext, vbo.getVertexVAO(i), vertexs[i]);
       // 将顶点坐标转换到屏幕坐标
       position[i] = renderContext.matViewport.mul(outPosition);
     }
