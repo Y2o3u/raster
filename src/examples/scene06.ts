@@ -4,6 +4,7 @@ import { Material } from '@/engine/core/material';
 import { Node } from '@/engine/core/node';
 import { PointLight } from '@/engine/core/point-light';
 import { Scene } from '@/engine/core/scene';
+import scheduler from '@/engine/core/schedule';
 import { Primitives } from '@/engine/geometry/primitives';
 import { Loader } from '@/engine/math/utils/file-loader';
 import { ObjParse } from '@/engine/math/utils/obj-parser';
@@ -38,12 +39,18 @@ export class Scene06 extends Scene {
 
     // 创建一个点光源
     this.pointLight = new PointLight();
-    // this.pointLight.setPosition(new Vec3(3, 1.5, 1));
-    this.pointLight.setPosition(new Vec3(2, 2, 1));
     this.pointLight.setScale(0.1);
+    const originPos = new Vec3(2, 2, 2);
+    this.pointLight.setPosition(originPos);
     this.pointLight.color = new Vec4(1, 1, 1, 1);
     this.pointLight.setVBO(sphereVertex, 3, 2, 0, 3, 0);
     this.addChild(this.pointLight);
+    // 旋转光源
+    this.interval(() => {
+      // 使用世界矩阵、
+      this.pointLight.setPosition(originPos.clone().rotateY(scheduler.getTotalTime() * 25));
+      console.log('计时器运行');
+    }, 0.1);
 
     // 创建球体
     const sphere = new Node();

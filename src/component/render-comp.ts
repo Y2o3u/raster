@@ -22,6 +22,7 @@ interface RendererProps {
   faceCulling: FaceCulling;
 }
 
+let lastScene: Scene | null = null;
 /** 渲染器组件 */
 const Renderer: React.FC<RendererProps> = ({
   resolution,
@@ -38,17 +39,23 @@ const Renderer: React.FC<RendererProps> = ({
     const loadScene = async () => {
       // 创建场景
       const scene = new SceneList[sceneKey as keyof typeof SceneList](resolution.x, resolution.y);
+
       // 异步初始化场景
       await scene.initAsync(resolution.x, resolution.y);
+
       // 场景加载完、再取消、避免闪烁
       if (animationFrameId.current !== null) {
         cancelAnimationFrame(animationFrameId.current);
       }
+      // 销毁上一个场景
+      if (lastScene) lastScene.destroy();
+      lastScene = scene;
       // 设置相机模式
       scene.camera.setMode(cameraMode);
       // 渲染场景
       render(scene);
     };
+
     loadScene();
   }, [resolution, sceneKey, cameraMode, isMSAAEnabled, renderMode, faceCulling]);
 

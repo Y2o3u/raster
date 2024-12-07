@@ -143,24 +143,26 @@ export class Vec3 {
    * 绕 X 轴旋转
    * @param rad 旋转角度（度）
    */
-  rotateX(rad: number): void {
+  rotateX(rad: number): this {
     rad *= Math.PI / 180;
     const y = this.y * Math.cos(rad) - this.z * Math.sin(rad);
     const z = this.y * Math.sin(rad) + this.z * Math.cos(rad);
     this.y = y;
     this.z = z;
+    return this;
   }
 
   /**
    * 绕 Y 轴旋转
    * @param rad 旋转角度（度）
    */
-  rotateY(rad: number): void {
+  rotateY(rad: number): this {
     rad *= Math.PI / 180;
     const x = this.z * Math.sin(rad) + this.x * Math.cos(rad);
     const z = this.z * Math.cos(rad) - this.x * Math.sin(rad);
     this.x = x;
     this.z = z;
+    return this;
   }
 
   /**

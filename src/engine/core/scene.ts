@@ -13,6 +13,10 @@ export class Scene {
 
   /** 是否展示MSAA开关 */
   static isShowMSAA = false;
+
+  /** 可销毁对象 */
+  disposables: { dispose: () => void }[] = [];
+
   constructor(width: number, height: number) {
     this.children = [];
     this.pointLight = new PointLight();
@@ -54,5 +58,28 @@ export class Scene {
   /** 清空场景 */
   clear() {
     this.children = [];
+  }
+
+  /**
+   * 开启一个定时器
+   * @param cb
+   * @param interval 秒
+   * @returns
+   */
+  interval(cb: () => void, interval: number, context = this) {
+    let id = setInterval(cb.bind(context), interval * 1000);
+    let disposeObj = {
+      dispose() {
+        clearInterval(id);
+      },
+    };
+    this.disposables.push(disposeObj);
+    return disposeObj;
+  }
+
+  /** 销毁 */
+  destroy() {
+    this.disposables.forEach((disposable) => disposable.dispose());
+    this.disposables = [];
   }
 }
