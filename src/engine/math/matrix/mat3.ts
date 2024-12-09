@@ -57,7 +57,7 @@ export class Mat3 {
   /**
    * 矩阵转置
    */
-  public transpose(): void {
+  public transpose(): Mat3 {
     const temp = [this.elements[1], this.elements[2], this.elements[5]];
 
     this.elements[1] = this.elements[3];
@@ -67,6 +67,8 @@ export class Mat3 {
     this.elements[3] = temp[0];
     this.elements[6] = temp[1];
     this.elements[7] = temp[2];
+
+    return this;
   }
 
   /**
@@ -158,5 +160,13 @@ export class Mat3 {
     i: number
   ): Mat3 {
     return new Mat3([a, b, c, d, e, f, g, h, i]);
+  }
+
+  /**
+   * 从列向量创建矩阵
+   * @returns 新的矩阵实例
+   */
+  public static fromColumns(a: Vec3, b: Vec3, c: Vec3): Mat3 {
+    return new Mat3([a.x, b.x, c.x, a.y, b.y, c.y, a.z, b.z, c.z]);
   }
 }

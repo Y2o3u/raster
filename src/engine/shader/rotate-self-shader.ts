@@ -38,7 +38,7 @@ export class RotateSelfShader extends Shader {
   frag(context: RenderContext, input: Vertex): Vec4 {
     const texture = context.getTexture(0);
     if (!texture) {
-      return new Vec4(1, 1, 1, 1);
+      return input.color || this.defaultColor;
     }
     // 纹理采样
     const color = texture.getColorByUV(input.uv.x, input.uv.y);

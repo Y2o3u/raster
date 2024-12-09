@@ -6,7 +6,9 @@ import { Vertex } from '../core/data/vertex';
 import Vec4 from '../math/vector/vec4';
 import { Node } from '../core/node';
 import { RasterizerDepth } from '../rasterizer/rasterizer-depth';
-import { getBaryCentricCoord } from '../math/utils/util';
+import { calculateTangent, getBaryCentricCoord } from '../math/utils/util';
+import { Vec3 } from '../math/vector/vec3';
+import { Vec2 } from '../math/vector/vec2';
 
 /** 渲染器列表 */
 const RasterizerList = [RasterizerTriangle, RasterizerNormal, RasterizerDepth];
@@ -82,18 +84,48 @@ export class Pipeline {
     // 渲染上下文
     const renderContext = this.renderContext;
 
-    // 过一遍顶点着色器、坐标转换
-    for (let i = 0; i < vertexCount; i++) {
-      vertexs[i] = new Vertex();
-      const outPosition = renderContext.shader.vert(renderContext, vbo.getVertexVAO(i), vertexs[i]);
-      // 将顶点坐标转换到屏幕坐标
-      position[i] = renderContext.matViewport.mul(outPosition);
+    const triangleCount = indices.length / 3;
+    for (let i = 0; i < triangleCount; i++) {
+      const vaos = [
+        vbo.getVertexVAO(indices[i * 3]),
+        vbo.getVertexVAO(indices[i * 3 + 1]),
+        vbo.getVertexVAO(indices[i * 3 + 2]),
+      ];
+
+      vaos.forEach((vao, j) => {
+        const index = indices[i * 3 + j];
+        vertexs[index] = new Vertex();
+        vertexs[index].position = Vec3.fromArray(vao.position);
+        vertexs[index].uv = Vec2.fromArray(vao.uv);
+        vertexs[index].color = Vec4.fromArray(vao.color.length > 0 ? vao.color : [1, 1, 1, 1]);
+      });
+
+      // 计算顶点切线、副切线
+      const { tangent, bitangent } = calculateTangent(
+        vertexs[indices[i * 3]],
+        vertexs[indices[i * 3 + 1]],
+        vertexs[indices[i * 3 + 2]]
+      );
+
+      vaos.forEach((_, j) => {
+        const index = indices[i * 3 + j];
+        vertexs[index].tangent = tangent;
+        vertexs[index].bitangent = bitangent;
+      });
+
+      // 过一遍顶点着色器
+      vaos.forEach((vao, j) => {
+        const index = indices[i * 3 + j];
+        const outPosition = renderContext.shader.vert(renderContext, vao, vertexs[index]);
+        // 将顶点坐标转换到屏幕坐标
+        position[index] = renderContext.matViewport.mul(outPosition);
+      });
     }
 
     // 使用当前模式下的光栅化器、遍历三角形、得到像素数据
     const rasterizer = this.rasterizers[this.renderMode];
     // 光栅化、组装三角形再遍历
-    const triangleCount = indices.length / 3;
+    // const triangleCount = indices.length / 3;
     for (let i = 0; i < triangleCount; i++) {
       const p0 = position[indices[i * 3]];
       const p1 = position[indices[i * 3 + 1]];

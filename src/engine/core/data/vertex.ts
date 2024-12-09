@@ -14,4 +14,8 @@ export class Vertex {
   uv: Vec2;
   /** 法线 */
   normal: Vec3;
+  /** 切线 */
+  tangent: Vec4;
+  /** 副切线 */
+  bitangent: Vec3;
 }

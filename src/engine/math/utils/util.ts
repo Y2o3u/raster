@@ -103,6 +103,18 @@ export function barycentricInterpolation(
     out.normal = barycentricInterpolationVec3(v0.normal, v1.normal, v2.normal, alpha, beta, gamma, out.normal);
   if (v0.uv) out.uv = barycentricInterpolationVec2(v0.uv, v1.uv, v2.uv, alpha, beta, gamma, out.uv);
   if (v0.color) out.color = barycentricInterpolationVec4(v0.color, v1.color, v2.color, alpha, beta, gamma, out.color);
+  if (v0.tangent)
+    out.tangent = barycentricInterpolationVec4(v0.tangent, v1.tangent, v2.tangent, alpha, beta, gamma, out.tangent);
+  if (v0.bitangent)
+    out.bitangent = barycentricInterpolationVec3(
+      v0.bitangent,
+      v1.bitangent,
+      v2.bitangent,
+      alpha,
+      beta,
+      gamma,
+      out.bitangent
+    );
   return out;
 }
 
@@ -217,4 +229,50 @@ function dataMerge(
     }
   }
   return offset + variableSize;
+}
+
+/**
+ * 计算顶点切线、副切线
+ * @param ver1
+ * @param ver2
+ * @param ver3
+ * @returns
+ */
+export function calculateTangent(ver1: Vertex, ver2: Vertex, ver3: Vertex): { tangent: Vec4; bitangent: Vec3 } {
+  const edge1 = ver2.position.sub(ver1.position);
+  const edge2 = ver3.position.sub(ver1.position);
+
+  const deltaUV1 = {
+    x: ver2.uv.x - ver1.uv.x,
+    y: ver2.uv.y - ver1.uv.y,
+  };
+  const deltaUV2 = {
+    x: ver3.uv.x - ver1.uv.x,
+    y: ver3.uv.y - ver1.uv.y,
+  };
+
+  const f = 1.0 / (deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y);
+
+  const tangent = new Vec4();
+  tangent.x = f * (deltaUV2.y * edge1.x - deltaUV1.y * edge2.x);
+  tangent.y = f * (deltaUV2.y * edge1.y - deltaUV1.y * edge2.y);
+  tangent.z = f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z);
+  tangent.normalize();
+
+  const bitangent = new Vec3();
+  bitangent.x = f * (-deltaUV2.x * edge1.x + deltaUV1.x * edge2.x);
+  bitangent.y = f * (-deltaUV2.x * edge1.y + deltaUV1.x * edge2.y);
+  bitangent.z = f * (-deltaUV2.x * edge1.z + deltaUV1.x * edge2.z);
+  bitangent.normalize();
+
+  return { tangent, bitangent };
+}
+
+/**
+ * 将值限制在0-1之间
+ * @param value
+ * @returns
+ */
+export function saturate(value: number): number {
+  return Math.max(0, Math.min(1, value));
 }

@@ -1,6 +1,8 @@
 import spot from '../resources/model/spot/spot_texture.png';
 import africanHead from '../resources/model/african/african_head_diffuse.png';
 import box from '../resources/texture/container_diffuse.png';
+import wallDiffuse from '../resources/texture/wall_diffuse.png';
+import wallNormal from '../resources/texture/wall_normal.png';
 
 /** 奶牛模型 */
 const spotObjPath = new URL('../resources/model/spot/spot_triangulated_good.obj', import.meta.url).pathname;
@@ -21,6 +23,10 @@ export const Png = {
   AfricanHead: africanHead,
   /** 容器 */
   Box: box,
+  /** 墙体 */
+  WallDiffuse: wallDiffuse,
+  /** 墙体法线 */
+  WallNormal: wallNormal,
 };
 
 /**

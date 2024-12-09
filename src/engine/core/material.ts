@@ -8,7 +8,7 @@ export class Material {
   /** 着色器 */
   shader: Shader;
   /** 纹理 */
-  private texture: Texture;
+  private textures: Texture[] = [];
 
   /**
    * @param vs - 顶点着色器
@@ -29,12 +29,12 @@ export class Material {
   }
 
   /** 设置纹理 */
-  setTexture(texture: Texture) {
-    this.texture = texture;
+  setTexture(texture: Texture, index = 0) {
+    this.textures[index] = texture;
   }
 
   /** 获取纹理 */
-  getTexture() {
-    return this.texture;
+  getTextures() {
+    return this.textures;
   }
 }

@@ -8,7 +8,6 @@ import { Loader } from '@/engine/math/utils/file-loader';
 import { ObjParse } from '@/engine/math/utils/obj-parser';
 import { Vec3 } from '@/engine/math/vector/vec3';
 import Vec4 from '@/engine/math/vector/vec4';
-import { LightModelFragmentLevel } from '@/engine/shader/light-model-fragment-level';
 import { LightModelRotateFragmentLevel } from '@/engine/shader/light-model-rotate-fragment-level';
 import { LightModelVertexLevel } from '@/engine/shader/light-model-vertex-level';
 import { Obj, Png } from '@/resources/resources';

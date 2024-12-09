@@ -125,7 +125,7 @@ const Renderer: React.FC<RendererProps> = ({
       // 节点材质数据
       const material = node.getMaterial();
       renderContext.shader = material.getShader();
-      renderContext.textures[0] = material.getTexture();
+      renderContext.textures = material.getTextures();
       // 渲染节点
       pipeline.renderNode(node);
     }
