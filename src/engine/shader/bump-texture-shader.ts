@@ -60,7 +60,7 @@ export class BumpTextureShader extends Shader {
 
       // 凹凸程度控制、因为法线为单位向量 x^2 + y^2 + z^2 = 1
       // 所以z分量由x、y分量计算得到、saturate用于将结果限制在【0，1】内
-      const bumpScale = 0;
+      const bumpScale = 1;
       tangentNormal.x *= bumpScale;
       tangentNormal.y *= bumpScale;
       tangentNormal.z = Math.sqrt(1 - saturate(tangentNormal.x * tangentNormal.x + tangentNormal.y * tangentNormal.y));

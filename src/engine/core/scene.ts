@@ -1,3 +1,4 @@
+import { Pipeline } from '../pipeline/pipeline';
 import { Camera } from './camera';
 import { Node } from './node';
 import { PointLight } from './point-light';
@@ -58,6 +59,25 @@ export class Scene {
   /** 清空场景 */
   clear() {
     this.children = [];
+  }
+
+  /** 渲染节点 */
+  renderNodes(pipeline: Pipeline) {
+    const renderContext = pipeline.renderContext;
+    // 遍历场景所有节点、填充FrameBuffer
+    for (let i = 0; i < this.size(); ++i) {
+      let node = this.getChild(i);
+      renderContext.matWorld = node.matWorld;
+      renderContext.matWorldIT = node.matWorldIT;
+      // 计算MVP矩阵
+      renderContext.matMVP = renderContext.matProjection.mul(renderContext.matView).mul(node.matWorld);
+      // 节点材质数据
+      const material = node.getMaterial();
+      renderContext.shader = material.getShader();
+      renderContext.textures = material.getTextures();
+      // 渲染节点
+      pipeline.renderNode(node);
+    }
   }
 
   /**
